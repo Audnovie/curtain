@@ -1,0 +1,128 @@
+# The iPhone app and its widgets. Generate the Xcode project with XcodeGen:
+#     xcodegen generate
+# CI does this on GitHub's Mac runners (.github/workflows/build.yml).
+name: Curtain
+options:
+  bundleIdPrefix: io.github.audnovie
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: false
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    TARGETED_DEVICE_FAMILY: "1"
+    IPHONEOS_DEPLOYMENT_TARGET: "18.0"
+    CODE_SIGN_STYLE: Manual
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_IDENTITY: ""
+    "CODE_SIGN_IDENTITY[sdk=iphonesimulator*]": "-"
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    SWIFT_STRICT_CONCURRENCY: minimal
+    DEAD_CODE_STRIPPING: YES
+
+targets:
+  CurtainCore:
+    type: library.static
+    platform: iOS
+    sources:
+      - path: Shared/Core
+    settings:
+      base:
+        PRODUCT_NAME: CurtainCore
+        APPLICATION_EXTENSION_API_ONLY: YES
+        SKIP_INSTALL: YES
+
+  Curtain:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+      - path: Shared/Platform
+      - path: Shared/WidgetViews
+    dependencies:
+      - target: CurtainCore
+      - target: CurtainWidgets
+        embed: true
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Curtain
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSRequiresIPhoneOS: true
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        # Tapping a widget opens curtain://event/<id>.
+        CFBundleURLTypes:
+          - CFBundleURLName: io.github.audnovie.curtain
+            CFBundleURLSchemes:
+              - curtain
+    entitlements:
+      path: App/Curtain.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.io.github.audnovie.curtain
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.audnovie.curtain
+        PRODUCT_NAME: Curtain
+        ENABLE_PREVIEWS: NO
+
+  CurtainWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Widgets
+      - path: Shared/Platform
+      - path: Shared/WidgetViews
+    dependencies:
+      - target: CurtainCore
+    info:
+      path: Widgets/Info.plist
+      properties:
+        CFBundleDisplayName: Curtain
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widgets/CurtainWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.io.github.audnovie.curtain
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.audnovie.curtain.widgets
+        PRODUCT_NAME: CurtainWidgets
+        APPLICATION_EXTENSION_API_ONLY: YES
+        SKIP_INSTALL: YES
+
+  CurtainUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: UITests
+    dependencies:
+      - target: Curtain
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.audnovie.curtain.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: Curtain
+
+schemes:
+  Curtain:
+    build:
+      targets:
+        Curtain: all
+        CurtainUITests: [test]
+    test:
+      config: Debug
+      gatherCoverageData: false
+      targets:
+        - CurtainUITests

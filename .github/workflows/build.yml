@@ -1,0 +1,143 @@
+name: Build and test
+
+on:
+  push:
+    branches: [main]
+    # Notes alone don't change the app: no rebuild for them.
+    paths-ignore: ['**.md']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  core:
+    name: Logic tests (Mac)
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tools on this runner
+        run: |
+          mkdir -p logs
+          {
+            sw_vers
+            xcodebuild -version
+            swift --version
+            xcrun simctl list runtimes
+            xcrun simctl list devicetypes | grep -i iphone | tail -12
+          } 2>&1 | tee logs/versions.log
+
+      - name: swift test
+        run: |
+          set -o pipefail
+          swift test 2>&1 | tee logs/core-test-full.log | grep -E "error|warning: unre|failed|passed|Executed|Compiling|Build" | tee logs/core-test.log
+
+      - name: Save logs to the ci-logs-core branch
+        if: always()
+        run: |
+          cd logs
+          echo "commit ${{ github.sha }} run ${{ github.run_id }} attempt ${{ github.run_attempt }} status ${{ job.status }}" > STATUS
+          git init -q -b logs
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git add -A
+          git commit -qm "core logs for ${{ github.sha }}"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" logs:ci-logs-core
+
+  ios:
+    name: iPhone app, simulator tests, .ipa
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: |
+          mkdir -p logs
+          brew install xcodegen 2>&1 | tail -3
+          xcodegen --version | tee logs/ios-versions.log
+          xcodebuild -version | tee -a logs/ios-versions.log
+
+      - name: Generate the Xcode project
+        run: |
+          xcodegen generate 2>&1 | tee logs/xcodegen.log
+          cat App/Curtain.entitlements Widgets/Info.plist >> logs/xcodegen.log
+
+      - name: Pick and start a simulator
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          d = json.load(sys.stdin)["devices"]
+          best = None
+          for rt, devs in d.items():
+              if "iOS" not in rt: continue
+              ver = tuple(int(x) for x in rt.split("iOS-")[-1].split("-"))
+              for dev in devs:
+                  if dev["name"] in ("iPhone 17 Pro", "iPhone 17"):
+                      if best is None or ver > best[0]: best = (ver, dev["udid"], dev["name"])
+          print(best[1])
+          sys.stderr.write("simulator: %s iOS %s\n" % (best[2], ".".join(map(str, best[0]))))
+          ' 2> logs/simulator.log)
+          cat logs/simulator.log
+          echo "SIM=$UDID" >> "$GITHUB_ENV"
+          # Boots while the app builds.
+          xcrun simctl boot "$UDID" || true
+
+      - name: Build for the simulator
+        run: |
+          set -o pipefail
+          defaults write com.apple.dt.Xcode IDEBuildingContinueBuildingAfterErrors -bool YES
+          xcodebuild build-for-testing -project Curtain.xcodeproj -scheme Curtain \
+            -destination "generic/platform=iOS Simulator" -derivedDataPath build/sim \
+            ONLY_ACTIVE_ARCH=YES ARCHS=arm64 \
+            2>&1 | tee logs/sim-build-full.log | grep -E "error:|warning: .*/(Shared|Widgets|App|UITests|Tests)/|BUILD|\*\* " | tee logs/sim-build.log
+
+      - name: Wait for the simulator
+        run: xcrun simctl bootstatus "$SIM" -b | tail -1
+
+      - name: Test on the simulator
+        run: |
+          set -o pipefail
+          xcodebuild test-without-building -project Curtain.xcodeproj -scheme Curtain \
+            -destination "platform=iOS Simulator,id=$SIM" \
+            -derivedDataPath build/sim -resultBundlePath build/Tests.xcresult \
+            2>&1 | tee logs/ios-test-full.log | grep -E "error:|Test Case|Executed|NOTE|PROBE|\*\* " | tee logs/ios-test.log
+
+      - name: Test summary
+        if: always()
+        run: |
+          xcrun xcresulttool get test-results summary --path build/Tests.xcresult 2>&1 | tee logs/ios-test-summary.json | head -60 || true
+
+      - name: Build the app for a real iPhone (unsigned)
+        if: always()
+        run: |
+          set -o pipefail
+          xcodebuild -project Curtain.xcodeproj -scheme Curtain -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build/dev \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            build 2>&1 | tee logs/ipa-build-full.log | grep -E "error:|warning: .*/(Shared|Widgets|App)/|BUILD|\*\* " | tee logs/ipa-build.log
+          APP=build/dev/Build/Products/Release-iphoneos/Curtain.app
+          ls -la "$APP" "$APP/PlugIns" | tee logs/ipa-contents.log
+          /usr/libexec/PlistBuddy -c Print "$APP/PlugIns/CurtainWidgets.appex/Info.plist" | tee -a logs/ipa-contents.log
+          du -sh "$APP" "$APP/PlugIns/CurtainWidgets.appex" | tee -a logs/ipa-contents.log
+
+      - name: Save logs to the ci-logs-ios branch
+        if: always()
+        run: |
+          cd logs
+          for f in sim-build-full.log ios-test-full.log ipa-build-full.log; do
+            if [ -f "$f" ]; then gzip -f "$f"; fi
+          done
+          echo "commit ${{ github.sha }} run ${{ github.run_id }} attempt ${{ github.run_attempt }} status ${{ job.status }}" > STATUS
+          git init -q -b logs
+          git config user.name "ci"
+          git config user.email "ci@users.noreply.github.com"
+          git add -A
+          git commit -qm "ios logs for ${{ github.sha }}"
+          git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" logs:ci-logs-ios
