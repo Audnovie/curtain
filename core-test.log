@@ -1,0 +1,93 @@
+Building for debugging...
+[7/14] Compiling CurtainCore Palette.swift
+[8/14] Compiling CurtainCore ProvisioningProfile.swift
+[9/14] Compiling CurtainCore Store.swift
+[10/14] Compiling CurtainCore ColorMath.swift
+[11/14] Compiling CurtainCore Display.swift
+[12/14] Compiling CurtainCore Models.swift
+[13/16] Compiling CurtainCore TimeMath.swift
+[14/16] Compiling CurtainCore TimelineBuilder.swift
+[15/21] Compiling CoreTests StoreTests.swift
+[16/21] Compiling CoreTests TestSupport.swift
+[17/21] Compiling CoreTests ColourTests.swift
+[18/21] Compiling CoreTests DisplayTests.swift
+[20/23] Compiling CoreTests TimeMathTests.swift
+[21/23] Compiling CoreTests TimelineTests.swift
+[23/25] Compiling CurtainCorePackageTests runner.swift
+Build complete! (36.84s)
+Test Case '-[CoreTests.ColourTests testContrast]' passed (0.003 seconds).
+Test Case '-[CoreTests.ColourTests testEveryBuiltInThemeIsReadable]' passed (0.000 seconds).
+Test Case '-[CoreTests.ColourTests testHex]' passed (0.000 seconds).
+Test Case '-[CoreTests.ColourTests testLabRoundTrip]' passed (0.000 seconds).
+Test Suite 'ColourTests' passed at 2026-11-20 10:42:32.389.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Case '-[CoreTests.DisplayTests testAllDayCountdown]' passed (0.001 seconds).
+Test Case '-[CoreTests.DisplayTests testAllDayTimeSince]' passed (0.000 seconds).
+Test Case '-[CoreTests.DisplayTests testAnAllDayBarIsNeverInHours]' passed (0.000 seconds).
+Test Case '-[CoreTests.DisplayTests testAnAllDayEventKeepsItsDayInAnotherTimeZone]' passed (0.001 seconds).
+Test Case '-[CoreTests.DisplayTests testBarFillsUpForTimeSince]' passed (0.000 seconds).
+Test Case '-[CoreTests.DisplayTests testBarIsOneBlockPerHour]' passed (0.000 seconds).
+Test Case '-[CoreTests.DisplayTests testCardAndWidgetAgree]' passed (0.002 seconds).
+Test Case '-[CoreTests.DisplayTests testCards]' passed (0.000 seconds).
+Test Case '-[CoreTests.DisplayTests testCountdownWordsOnAWidget]' passed (0.000 seconds).
+Test Case '-[CoreTests.DisplayTests testCountdownWordsPastADay]' passed (0.000 seconds).
+Test Case '-[CoreTests.DisplayTests testFinishedAndReusable]' passed (0.000 seconds).
+Test Case '-[CoreTests.DisplayTests testSamples]' passed (0.000 seconds).
+Test Case '-[CoreTests.DisplayTests testTimeSinceWordsOnAWidget]' passed (0.000 seconds).
+Test Case '-[CoreTests.DisplayTests testWidgetWordsAreWrittenTheWayIOSWritesThem]' passed (0.000 seconds).
+Test Suite 'DisplayTests' passed at 2026-11-20 10:42:32.396.
+	 Executed 14 tests, with 0 failures (0 unexpected) in 0.005 (0.007) seconds
+Test Case '-[CoreTests.PaletteTests testAwkwardInput]' passed (0.000 seconds).
+Test Case '-[CoreTests.PaletteTests testOneColourAndGreyPictures]' passed (0.002 seconds).
+Test Case '-[CoreTests.PaletteTests testSameAnswerEveryTime]' passed (0.009 seconds).
+Test Case '-[CoreTests.PaletteTests testSimilarShadesBecomeOneColour]' passed (0.005 seconds).
+Test Case '-[CoreTests.PaletteTests testTwoColourPicture]' passed (0.002 seconds).
+Test Suite 'PaletteTests' passed at 2026-11-20 10:42:32.415.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.018 (0.019) seconds
+Test Case '-[CoreTests.ProvisioningProfileTests testGroupsAreReadFromAProfile]' passed (0.001 seconds).
+Test Case '-[CoreTests.ProvisioningProfileTests testProfilesWithoutGroupsAndRubbish]' passed (0.000 seconds).
+Test Suite 'ProvisioningProfileTests' passed at 2026-11-20 10:42:32.416.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Case '-[CoreTests.ScheduleTests testASavedDayIsTheSameDayInEveryTimeZone]' passed (0.002 seconds).
+Test Case '-[CoreTests.ScheduleTests testDays]' passed (0.001 seconds).
+Test Case '-[CoreTests.ScheduleTests testDefaultCountdownDate]' passed (0.001 seconds).
+Test Case '-[CoreTests.ScheduleTests testNextUsualTime]' passed (0.001 seconds).
+Test Case '-[CoreTests.ScheduleTests testNextUsualTimeAcrossClockChanges]' passed (0.000 seconds).
+Test Case '-[CoreTests.ScheduleTests testTidyUsualTimes]' passed (0.000 seconds).
+Test Case '-[CoreTests.ScheduleTests testWholeMinute]' passed (0.000 seconds).
+Test Suite 'ScheduleTests' passed at 2026-11-20 10:42:32.423.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.005 (0.006) seconds
+Test Case '-[CoreTests.StoreTests testAddingTidiesWhatWasTyped]' passed (0.000 seconds).
+Test Case '-[CoreTests.StoreTests testDashboardOrder]' passed (0.001 seconds).
+Test Case '-[CoreTests.StoreTests testFinishedOnesAndDeleting]' passed (0.000 seconds).
+Test Case '-[CoreTests.StoreTests testKeptColourSets]' passed (0.000 seconds).
+Test Case '-[CoreTests.StoreTests testOlderAndDamagedFilesStillLoad]' passed (0.001 seconds).
+Test Case '-[CoreTests.StoreTests testSaveAndLoadOnDisk]' passed (0.005 seconds).
+Test Case '-[CoreTests.StoreTests testSavedFileRoundTrip]' passed (0.001 seconds).
+Test Case '-[CoreTests.StoreTests testSettingAReusableCountdown]' passed (0.000 seconds).
+Test Suite 'StoreTests' passed at 2026-11-20 10:42:32.432.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.009 (0.010) seconds
+Test Case '-[CoreTests.TimeMathTests testClockPlusCountdownAlwaysAddsUp]' passed (0.033 seconds).
+Test Case '-[CoreTests.TimeMathTests testOtherPrecisions]' passed (0.000 seconds).
+Test Case '-[CoreTests.TimeMathTests testSplit]' passed (0.000 seconds).
+Test Case '-[CoreTests.TimeMathTests testStartPlusTimeSinceAlwaysAddsUp]' passed (0.022 seconds).
+Test Case '-[CoreTests.TimeMathTests testTenMinutesAtSixFifty]' passed (0.000 seconds).
+Test Suite 'TimeMathTests' passed at 2026-11-20 10:42:32.488.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.055 (0.056) seconds
+Test Case '-[CoreTests.TimelineTests testADayAndABitAway]' passed (0.023 seconds).
+Test Case '-[CoreTests.TimelineTests testAllDay]' passed (0.007 seconds).
+Test Case '-[CoreTests.TimelineTests testAWholeShiftIsOnePlan]' passed (0.006 seconds).
+Test Case '-[CoreTests.TimelineTests testFarAwayCountdownChangesByTheHour]' passed (0.002 seconds).
+Test Case '-[CoreTests.TimelineTests testNothingToShowAndAlreadyOver]' passed (0.001 seconds).
+Test Case '-[CoreTests.TimelineTests testPlansFromEveryDistanceReadRight]' passed (0.119 seconds).
+Test Case '-[CoreTests.TimelineTests testShortCountdownIsPlannedToTheEnd]' passed (0.000 seconds).
+Test Case '-[CoreTests.TimelineTests testTheSystemTextTicksJustBeforeTheMinute]' passed (0.001 seconds).
+Test Case '-[CoreTests.TimelineTests testTimeSince]' passed (0.051 seconds).
+Test Case '-[CoreTests.TimelineTests testWhereTheSystemTextIsUsed]' passed (0.000 seconds).
+Test Suite 'TimelineTests' passed at 2026-11-20 10:42:32.702.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.211 (0.213) seconds
+Test Suite 'CurtainCorePackageTests.xctest' passed at 2026-11-20 10:42:32.702.
+	 Executed 55 tests, with 0 failures (0 unexpected) in 0.307 (0.317) seconds
+Test Suite 'All tests' passed at 2026-11-20 10:42:32.702.
+	 Executed 55 tests, with 0 failures (0 unexpected) in 0.307 (0.321) seconds
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
