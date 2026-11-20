@@ -114,9 +114,14 @@ final class RealWidgetUITests: XCTestCase {
             record("no-edit-button")
             return XCTFail("couldn't get the Home Screen into editing mode")
         }
-        edit.tap()
-        sleep(1)
-        guard let add = find(labelled("Add Widget"), timeout: 5) else {
+        // The Edit button takes a moment to wake up after the icons start to wiggle.
+        var addWidget: XCUIElement?
+        for _ in 0..<4 where addWidget == nil {
+            sleep(2)
+            edit.tap()
+            addWidget = find(labelled("Add Widget"), timeout: 4)
+        }
+        guard let add = addWidget else {
             record("no-add-widget")
             return XCTFail("no Add Widget in the Edit menu")
         }
@@ -212,14 +217,25 @@ final class RealWidgetUITests: XCTestCase {
             sleep(2)
             record("chose-lock-screen")
         }
-        guard let addWidgets = find(labelled("Add Widgets") + labelled("ADD WIDGETS") + labelled("Widgets"), timeout: 6) else {
+        guard let addWidgets = find([springboard.buttons["grouped-widgets-reticle-view"]] + labelled("Add Widget")
+                                        + labelled("Add Widgets"), timeout: 6) else {
             record("no-add-widgets")
             return XCTFail("no widget row to tap on the Lock Screen")
         }
         addWidgets.tap()
-        sleep(2)
+        sleep(3)
         record("picker")
-        guard let row = find(labelled("Curtain"), timeout: 6) else {
+        // The picker lists apps under its suggestions; Curtain may be further down.
+        var found = find(labelled("Curtain"), timeout: 4)
+        var scrolls = 0
+        while found == nil && scrolls < 4 {
+            springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
+                .press(forDuration: 0.1, thenDragTo: springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.55)))
+            sleep(1)
+            scrolls += 1
+            found = find(labelled("Curtain"), timeout: 2)
+        }
+        guard let row = found else {
             record("not-in-picker")
             return XCTFail("Curtain isn't in the Lock Screen widget picker")
         }

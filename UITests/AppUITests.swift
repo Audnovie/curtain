@@ -335,7 +335,9 @@ final class FlowUITests: CurtainUITestCase {
         card(app, "Dentist").tap()
         let delete = app.buttons["detail.delete"]
         XCTAssertTrue(delete.waitForExistence(timeout: 10))
-        delete.tap()
+        // Let the sheet finish sliding up before tapping inside it.
+        sleep(1)
+        delete.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         // The row and the confirmation are both called Delete; the confirmation is the newer one.
         let buttons = app.buttons.matching(NSPredicate(format: "label == 'Delete'"))
         XCTAssertTrue(buttons.element(boundBy: 1).waitForExistence(timeout: 5), "no confirmation")

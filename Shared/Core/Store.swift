@@ -35,8 +35,10 @@ public enum StateFile {
                 return .unreadable("saved by a newer version of the app (format \(state.version))")
             }
             return .loaded(state)
+        } catch is DecodingError {
+            return .unreadable("it isn't in the form this app saves")
         } catch {
-            return .unreadable(String(describing: error))
+            return .unreadable(error.localizedDescription)
         }
     }
 
