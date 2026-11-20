@@ -96,7 +96,7 @@ jobs:
           xcodebuild build-for-testing -project Curtain.xcodeproj -scheme Curtain \
             -destination "generic/platform=iOS Simulator" -derivedDataPath build/sim \
             ONLY_ACTIVE_ARCH=YES ARCHS=arm64 \
-            2>&1 | tee logs/sim-build-full.log | grep -E "error:|warning: .*/(Shared|Widgets|App|UITests|Tests)/|BUILD|\*\* " | tee logs/sim-build.log
+            2>&1 | tee logs/sim-build-full.log | grep -E "error:|warning: .*/(Shared|Widgets|App|UITests|Tests)/|\*\* " | tee logs/sim-build.log
 
       - name: Wait for the simulator
         run: xcrun simctl bootstatus "$SIM" -b | tail -1
@@ -107,7 +107,7 @@ jobs:
           xcodebuild test-without-building -project Curtain.xcodeproj -scheme Curtain \
             -destination "platform=iOS Simulator,id=$SIM" \
             -derivedDataPath build/sim -resultBundlePath build/Tests.xcresult \
-            2>&1 | tee logs/ios-test-full.log | grep -E "error:|Test Case|Executed|NOTE|PROBE|\*\* " | tee logs/ios-test.log
+            2>&1 | tee logs/ios-test-full.log | grep -E "error:|Test Case|Executed|NOTE|\*\* " | tee logs/ios-test.log
 
       - name: Test summary
         if: always()
@@ -121,7 +121,7 @@ jobs:
           xcodebuild -project Curtain.xcodeproj -scheme Curtain -configuration Release \
             -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build/dev \
             CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
-            build 2>&1 | tee logs/ipa-build-full.log | grep -E "error:|warning: .*/(Shared|Widgets|App)/|BUILD|\*\* " | tee logs/ipa-build.log
+            build 2>&1 | tee logs/ipa-build-full.log | grep -E "error:|warning: .*/(Shared|Widgets|App)/|\*\* " | tee logs/ipa-build.log
           APP=build/dev/Build/Products/Release-iphoneos/Curtain.app
           ls -la "$APP" "$APP/PlugIns" | tee logs/ipa-contents.log
           /usr/libexec/PlistBuddy -c Print "$APP/PlugIns/CurtainWidgets.appex/Info.plist" | tee -a logs/ipa-contents.log
