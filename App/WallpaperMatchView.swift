@@ -5,6 +5,7 @@
 import SwiftUI
 import PhotosUI
 import UIKit
+import ImageIO
 import CurtainCore
 
 struct WallpaperMatchView: View {
@@ -17,6 +18,7 @@ struct WallpaperMatchView: View {
     @State private var swatches: [Swatch] = []
     @State private var suggestions: [Theme] = []
     @State private var failed = false
+    @State private var loading: Task<Void, Never>?
 
     var body: some View {
         List {
@@ -103,9 +105,17 @@ struct WallpaperMatchView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: item) { _, picked in
             guard let picked = picked else { return }
-            Task {
+            // Only the newest pick counts.
+            loading?.cancel()
+            loading = Task {
                 let data = try? await picked.loadTransferable(type: Data.self)
-                use(data.flatMap { UIImage(data: $0) })
+                // A photo can be very large. It is shrunk off the main thread, without ever
+                // being opened at full size, and only the small copy is kept.
+                let small = await Task.detached(priority: .userInitiated) {
+                    data.flatMap { Picture.thumbnail(from: $0) }
+                }.value
+                if Task.isCancelled { return }
+                use(small)
             }
         }
     }
@@ -139,18 +149,36 @@ struct WallpaperMatchView: View {
     }
 
     private func use(_ picked: UIImage?) {
-        guard let picked = picked, let pixels = WallpaperMatchView.pixels(of: picked) else {
+        guard let picked = picked, let pixels = Picture.pixels(of: picked) else {
             failed = true
             return
         }
-        let found = Palette.extract(pixels: pixels, width: WallpaperMatchView.side, height: WallpaperMatchView.side)
+        let found = Palette.extract(pixels: pixels, width: Picture.side, height: Picture.side)
         failed = found.isEmpty
         image = picked
         swatches = found
         suggestions = Palette.suggestions(from: found)
     }
 
+}
+
+/// Picture handling that needs nothing on screen, so it can run off the main thread.
+enum Picture {
     static let side = 100
+
+    /// A copy no more than 1000 pixels on its longer side, made without opening the picture at
+    /// full size.
+    static func thumbnail(from data: Data) -> UIImage? {
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceShouldCacheImmediately: true,
+            kCGImageSourceThumbnailMaxPixelSize: 1000,
+        ]
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
+              let small = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary) else { return nil }
+        return UIImage(cgImage: small)
+    }
 
     /// The picture shrunk to a small square of plain RGBA bytes, which is all the colour search needs.
     static func pixels(of image: UIImage) -> [UInt8]? {

@@ -157,6 +157,40 @@ final class DisplayTests: XCTestCase {
                        CardDisplay(big: "5 days", detail: "", state: .running))
     }
 
+    /// Saved on a phone in Toronto, then read on phones set to other time zones.
+    func testAnAllDayEventKeepsItsDayInAnotherTimeZone() {
+        let christmas = countdown("Christmas", to: at(2026, 12, 25), allDay: true)
+        for zone in ["America/Vancouver", "Asia/Tokyo", "Pacific/Auckland"] {
+            var there = Calendar(identifier: .gregorian)
+            there.timeZone = TimeZone(identifier: zone)!
+            func show(_ day: Int, _ hour: Int) -> WidgetDisplay {
+                Display.widget(event: christmas, now: at(2026, 12, day, hour, 0, calendar: there), calendar: there)
+            }
+            XCTAssertEqual(show(24, 23).timeText, "1 day", zone)
+            XCTAssertEqual(show(25, 0).state, .today, zone)
+            XCTAssertEqual(show(25, 23).state, .today, zone)
+            XCTAssertEqual(show(26, 0).state, .finished, zone)
+            XCTAssertEqual(Display.nextChange(event: christmas, after: at(2026, 12, 24, 9, 0, calendar: there), calendar: there),
+                           at(2026, 12, 25, calendar: there), zone)
+            XCTAssertEqual(christmas.moment(calendar: there), at(2026, 12, 25, calendar: there), zone)
+            // Opening it in the editor there and saving it again doesn't move it.
+            XCTAssertEqual(christmas.forEditing(calendar: there).fromEditing(calendar: there), christmas.normalized(calendar: there), zone)
+        }
+        // Tidying twice changes nothing.
+        XCTAssertEqual(christmas.normalized(calendar: cal).normalized(calendar: cal), christmas.normalized(calendar: cal))
+        XCTAssertEqual(christmas.normalized(calendar: cal).date, christmas.date)
+    }
+
+    func testAnAllDayBarIsNeverInHours() {
+        let trip = countdown("Trip", to: at(2026, 11, 22), allDay: true)
+        func bar(_ day: Int) -> Bar { Display.widget(event: trip, now: at(2026, 11, day, 10, 0), calendar: cal).bar }
+        XCTAssertEqual(bar(19), Bar(unit: .day, full: 3, partial: 0))
+        XCTAssertEqual(bar(20), Bar(unit: .day, full: 2, partial: 0))
+        // One day to go is one block, not 24 hour-blocks.
+        XCTAssertEqual(bar(21), Bar(unit: .day, full: 1, partial: 0))
+        XCTAssertEqual(bar(22), .empty)
+    }
+
     func testAllDayTimeSince() {
         let moved = since("Moved in", from: at(2026, 11, 1), allDay: true)
         func show(_ now: Date) -> WidgetDisplay { Display.widget(event: moved, now: now, calendar: cal) }
@@ -180,7 +214,7 @@ final class DisplayTests: XCTestCase {
     }
 
     func testSamples() {
-        XCTAssertEqual(WidgetDisplay.sample(mode: .countdown).bar.blocks, 7)
+        XCTAssertEqual(WidgetDisplay.sample(mode: .countdown).bar.blocks, 8)
         XCTAssertEqual(WidgetDisplay.nothing(mode: .since).state, .empty)
         XCTAssertEqual(Display.compact(Amount()), "")
     }

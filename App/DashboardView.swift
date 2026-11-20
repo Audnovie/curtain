@@ -26,6 +26,7 @@ struct DashboardView: View {
     @State private var selecting = false
     @State private var selection: Set<UUID> = []
     @State private var confirmingDelete = false
+    @State private var hidShareWarning = false
 
     private let columns = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
@@ -74,6 +75,13 @@ struct DashboardView: View {
     private func openRequested() {
         guard let id = store.openRequest else { return }
         store.openRequest = nil
+        // Don't pull an editor out from under unsaved changes.
+        if let open = sheet {
+            switch open {
+            case .new, .edit: return
+            case .detail, .settings: break
+            }
+        }
         stopSelecting()
         sheet = .detail(id)
     }
@@ -94,6 +102,12 @@ struct DashboardView: View {
             VStack(spacing: 12) {
                 if let notice = store.notice {
                     NoticeBanner(text: notice) { store.notice = nil }
+                }
+                if !store.location.shared && !hidShareWarning {
+                    NoticeBanner(text: "Widgets can't see these countdowns yet. This copy of the app was installed without the folder it shares with its widgets (its app group), so a widget will say \u{201C}Open Curtain\u{201D}. It needs installing again with that group included.") {
+                        hidShareWarning = true
+                    }
+                    .accessibilityIdentifier("notice.noshare")
                 }
                 if events.isEmpty {
                     emptyState

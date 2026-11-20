@@ -145,4 +145,47 @@ public enum Schedule {
         let y = calendar.startOfDay(for: b)
         return calendar.dateComponents([.day], from: x, to: y).day ?? 0
     }
+
+    // MARK: Saved days
+    //
+    // An all-day event is saved as noon UTC on its calendar day, not as "midnight here". Midnight
+    // here is a different day somewhere else, so a day saved that way would slip when the phone
+    // changed time zone. Noon UTC names the day itself.
+
+    static func gregorian(in zone: TimeZone) -> Calendar {
+        var c = Calendar(identifier: .gregorian)
+        c.timeZone = zone
+        return c
+    }
+
+    static let utcCalendar = gregorian(in: TimeZone(secondsFromGMT: 0) ?? TimeZone.current)
+
+    /// The saved form of the calendar day that `date` falls on, on `calendar`'s clock.
+    public static func dayStamp(for date: Date, calendar: Calendar) -> Date {
+        let local = gregorian(in: calendar.timeZone).dateComponents([.year, .month, .day], from: date)
+        var c = DateComponents()
+        c.year = local.year
+        c.month = local.month
+        c.day = local.day
+        c.hour = 12
+        return utcCalendar.date(from: c) ?? date
+    }
+
+    /// A saved day made exact. Does nothing to one that is already noon UTC.
+    public static func tidy(dayStamp date: Date) -> Date {
+        dayStamp(for: date, calendar: utcCalendar)
+    }
+
+    /// Where a saved day begins on `calendar`'s clock.
+    public static func startOfDay(stamp: Date, calendar: Calendar) -> Date {
+        let day = utcCalendar.dateComponents([.year, .month, .day], from: stamp)
+        var c = DateComponents()
+        c.year = day.year
+        c.month = day.month
+        c.day = day.day
+        // Noon always exists; in a few places midnight doesn't on the day the clocks change.
+        c.hour = 12
+        guard let noon = gregorian(in: calendar.timeZone).date(from: c) else { return stamp }
+        return calendar.startOfDay(for: noon)
+    }
 }

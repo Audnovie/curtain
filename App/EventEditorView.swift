@@ -14,20 +14,24 @@ struct EventEditorView: View {
 
     init(event: Event, isNew: Bool) {
         self.isNew = isNew
-        _draft = State(initialValue: event)
-        // The "add a usual time" wheel starts at 5:00 PM.
+        // The draft's date is on this phone's clock, which is what the date picker works with.
         let cal = AppClock.calendar
+        _draft = State(initialValue: event.forEditing(calendar: cal))
+        // The "add a usual time" wheel starts at 5:00 PM.
         let five = cal.date(bySettingHour: 17, minute: 0, second: 0, of: AppClock.now) ?? AppClock.now
         _newUsualTime = State(initialValue: five)
     }
 
     private var canBeReusable: Bool { draft.mode == .countdown && !draft.allDay }
 
+    /// The draft as it would be saved.
+    private var result: Event { draft.fromEditing(calendar: AppClock.calendar) }
+
     var body: some View {
         NavigationStack {
             Form {
                 Section {
-                    EventCard(event: draft.normalized(calendar: AppClock.calendar), now: AppClock.now)
+                    EventCard(event: result, now: AppClock.now)
                         .frame(maxWidth: 190)
                         .frame(maxWidth: .infinity)
                         .listRowInsets(EdgeInsets())
@@ -57,8 +61,7 @@ struct EventEditorView: View {
                             .accessibilityIdentifier("editor.date")
                     }
                 } footer: {
-                    if draft.mode == .countdown && Display.isFinished(draft.normalized(calendar: AppClock.calendar),
-                                                                      now: AppClock.now, calendar: AppClock.calendar) {
+                    if draft.mode == .countdown && Display.isFinished(result, now: AppClock.now, calendar: AppClock.calendar) {
                         Text("That time has already passed, so this will show as finished.")
                     }
                 }
@@ -155,7 +158,7 @@ struct EventEditorView: View {
 
     private func save() {
         let now = AppClock.now
-        let event = draft
+        let event = result
         store.update { $0.upsert(event, now: now, calendar: AppClock.calendar) }
         dismiss()
     }

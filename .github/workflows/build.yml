@@ -51,7 +51,7 @@ jobs:
           git push -qf "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" logs:ci-logs-core
 
   ios:
-    name: iPhone app, simulator tests, .ipa
+    name: iPhone app, simulator tests, unsigned device build
     runs-on: macos-26
     timeout-minutes: 60
     steps:

@@ -43,18 +43,37 @@ enum SharedContainer {
         return ProvisioningProfile.appGroups(in: data)
     }
 
-    static func resolve() -> Location {
+    static func location(inGroup group: String) -> Location? {
+        guard let base = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: group) else { return nil }
+        let dir = base.appendingPathComponent("Library/Application Support/Curtain", isDirectory: true)
+        return Location(file: dir.appendingPathComponent(StateFile.fileName), shared: true, group: group)
+    }
+
+    /// This program's own folder, which the other program can't see.
+    static var ownLocation: Location {
         let fm = FileManager.default
-        for group in candidateGroups() {
-            if let base = fm.containerURL(forSecurityApplicationGroupIdentifier: group) {
-                let dir = base.appendingPathComponent("Library/Application Support/Curtain", isDirectory: true)
-                return Location(file: dir.appendingPathComponent(StateFile.fileName), shared: true, group: group)
-            }
-        }
         let base = (try? fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true))
             ?? fm.temporaryDirectory
         let dir = base.appendingPathComponent("Curtain", isDirectory: true)
         return Location(file: dir.appendingPathComponent(StateFile.fileName), shared: false, group: nil)
+    }
+
+    static func resolve() -> Location {
+        for group in candidateGroups() {
+            if let found = location(inGroup: group) { return found }
+        }
+        return ownLocation
+    }
+
+    /// Other places a saved file could have been left by an earlier install of this app: its own
+    /// folder (a copy installed without the shared folder), or a group under another name.
+    static func olderLocations(than current: Location) -> [Location] {
+        var out: [Location] = []
+        for group in candidateGroups() where group != current.group {
+            if let found = location(inGroup: group) { out.append(found) }
+        }
+        if current.shared { out.append(ownLocation) }
+        return out
     }
 }
 

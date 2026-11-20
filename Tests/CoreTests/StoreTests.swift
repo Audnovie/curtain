@@ -24,6 +24,8 @@ final class StoreTests: XCTestCase {
         let text = String(decoding: data, as: UTF8.self)
         XCTAssertTrue(text.contains("\"#071A55\""), text)
         XCTAssertTrue(text.contains("\"2026-11-20T02:00:00Z\""), text)
+        // An all-day event is saved as its day, at noon UTC: 1 November, whatever the time zone.
+        XCTAssertTrue(text.contains("\"2026-11-01T12:00:00Z\""), text)
         XCTAssertTrue(text.contains("\"usualTimes\""), text)
     }
 
@@ -104,7 +106,9 @@ final class StoreTests: XCTestCase {
         XCTAssertTrue(state.events[1].usualTimes.isEmpty)
         XCTAssertEqual(state.events[1].date, at(2026, 11, 19, 9, 0))
         state.upsert(countdown("Trip", to: at(2026, 12, 25, 15, 30), reusable: true, allDay: true, usual: [60]), now: now, calendar: cal)
-        XCTAssertEqual(state.events[2].date, at(2026, 12, 25))
+        // An all-day event keeps its day as noon UTC, and counts from the start of that day here.
+        XCTAssertEqual(state.events[2].date, at(2026, 12, 25, 12, 0, calendar: utc()))
+        XCTAssertEqual(state.events[2].moment(calendar: cal), at(2026, 12, 25))
         XCTAssertFalse(state.events[2].reusable)
     }
 

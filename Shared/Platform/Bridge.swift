@@ -32,7 +32,12 @@ extension WidgetDisplay {
 ///     -UITestNow 2026-11-19T18:50:30-05:00  -UITestTimeZone America/Toronto
 /// Widgets always use the real clock.
 enum AppClock {
+    #if DEBUG
     static let arguments = ProcessInfo.processInfo.arguments
+    #else
+    /// A build made for a phone ignores every test switch (-UITestReset and the rest).
+    static let arguments: [String] = []
+    #endif
 
     static func value(after flag: String) -> String? {
         guard let i = arguments.firstIndex(of: flag), i + 1 < arguments.count else { return nil }

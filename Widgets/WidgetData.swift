@@ -42,7 +42,7 @@ enum WidgetData {
         f.locale = Locale.autoupdatingCurrent
         if event.allDay {
             f.setLocalizedDateFormatFromTemplate("MMMd")
-            return (event.mode == .countdown ? "On " : "Since ") + f.string(from: event.date)
+            return (event.mode == .countdown ? "On " : "Since ") + f.string(from: event.moment(calendar: calendar))
         }
         f.dateStyle = .none
         f.timeStyle = .short
@@ -71,7 +71,15 @@ enum WidgetData {
             CurtainEntry(date: $0.date, display: $0.display, theme: theme, live: $0.liveReference,
                          caption: $0.display.state == .running ? caption : nil, eventID: event?.id)
         }
-        return (entries, plan.reloadAfter)
+        var reload = plan.reloadAfter
+        // A widget left on "whichever comes first" moves on to the next countdown when this
+        // one ends, so it needs one more look just after that.
+        let picked = chosen.flatMap { UUID(uuidString: $0) }.flatMap { state.event(id: $0) }
+        let leftOnFirst = picked == nil || picked?.id != event?.id
+        if reload == nil, leftOnFirst, let last = plan.entries.last, last.display.state == .finished, last.date > now {
+            reload = last.date.addingTimeInterval(60)
+        }
+        return (entries, reload)
     }
 
     static func timeline(mode: EventMode, chosen: String?, family: WidgetFamily) -> Timeline<CurtainEntry> {

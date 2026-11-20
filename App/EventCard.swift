@@ -18,7 +18,7 @@ struct EventCard: View {
         let waiting = card.state == .finished && event.reusable
         let theme = event.theme
         VStack(alignment: .leading, spacing: 3) {
-            HStack(alignment: .top, spacing: 6) {
+            HStack(alignment: .top, spacing: 5) {
                 Text(event.name)
                     .font(.system(size: large ? 20 : 17, weight: .semibold))
                     .lineLimit(2)

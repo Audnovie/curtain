@@ -19,7 +19,7 @@ struct SettingsView: View {
 
                 Section {
                     NavigationLink {
-                        ThemePickerView(theme: defaultThemeBinding, sampleName: "New countdown")
+                        DefaultColoursView(initial: store.state.settings.defaultTheme)
                     } label: {
                         HStack {
                             Text("Colours for new countdowns")
@@ -91,10 +91,24 @@ struct SettingsView: View {
         Binding(get: { store.state.settings.showSeconds },
                 set: { on in store.update { $0.settings.showSeconds = on } })
     }
+}
 
-    private var defaultThemeBinding: Binding<Theme> {
-        Binding(get: { store.state.settings.defaultTheme },
-                set: { theme in store.update { $0.settings.defaultTheme = theme } })
+/// Choosing the colours new countdowns start with. The choice is saved on the way out, not on
+/// every movement of a finger across the colour picker.
+struct DefaultColoursView: View {
+    @EnvironmentObject private var store: Store
+    @State private var theme: Theme
+
+    init(initial: Theme) {
+        _theme = State(initialValue: initial)
+    }
+
+    var body: some View {
+        ThemePickerView(theme: $theme, sampleName: "New countdown")
+            .onDisappear {
+                let chosen = theme
+                store.update { $0.settings.defaultTheme = chosen }
+            }
     }
 }
 
@@ -115,7 +129,11 @@ struct WidgetGalleryView: View {
         let cal = AppClock.calendar
         let events = store.state.dashboardOrder(now: now, calendar: cal)
         let event = events.first { $0.id == chosen } ?? events.first
-        let display = event.map { Display.widget(event: $0, now: now, calendar: cal) } ?? .sample(mode: .countdown)
+        let planned = event.map { TimelineBuilder.entry($0, at: now, calendar: cal) }
+        let display = planned?.display ?? .sample(mode: .countdown)
+        // Drawn the way a widget draws it, including iOS's own counting text where a widget uses
+        // that. (A test's pinned clock can't steer that text, so tests get our own words.)
+        let live = AppClock.pinned == nil ? planned?.liveReference : nil
         let theme = event?.theme ?? store.state.settings.defaultTheme
         return List {
             if events.count > 1 {
@@ -130,9 +148,9 @@ struct WidgetGalleryView: View {
 
             Section {
                 LockScreenMock(now: now) {
-                    InlineFace(display: display)
+                    InlineFace(display: display, live: live)
                 } rect: {
-                    LockRectFace(display: display)
+                    LockRectFace(display: display, live: live)
                 }
                 .listRowInsets(EdgeInsets())
                 .listRowBackground(Color.clear)
@@ -144,13 +162,13 @@ struct WidgetGalleryView: View {
 
             Section {
                 HStack(spacing: 12) {
-                    homeTile(HomeFace(display: display, theme: theme), theme: theme, width: 158)
+                    homeTile(HomeFace(display: display, theme: theme, live: live), theme: theme, width: 158)
                     Spacer(minLength: 0)
                 }
                 .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                 .listRowBackground(Color.clear)
                 homeTile(HomeFace(display: display, theme: theme,
-                                  caption: event.map { Fmt.longCaption($0, now: now) }, wide: true),
+                                  caption: event.map { Fmt.longCaption($0, now: now) }, wide: true, live: live),
                          theme: theme, width: 338)
                     .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
                     .listRowBackground(Color.clear)
@@ -210,7 +228,7 @@ struct LockScreenMock<Inline: View, Rect: View>: View {
     @ViewBuilder let rect: () -> Rect
 
     static var wallpaper: LinearGradient {
-        LinearGradient(colors: [Color(red: 0.03, green: 0.09, blue: 0.33), Color(red: 0.15, green: 0.36, blue: 0.44)],
+        LinearGradient(colors: [Color(red: 0.03, green: 0.09, blue: 0.33), Color(red: 0.15, green: 0.35, blue: 0.44)],
                        startPoint: .top, endPoint: .bottom)
     }
 

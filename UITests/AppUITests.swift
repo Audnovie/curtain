@@ -228,6 +228,23 @@ final class EditorUITests: CurtainUITestCase {
         XCTAssertTrue(text.contains("Since 2:45 PM"), text)
     }
 
+    /// An all-day countdown is saved as its calendar day. Opening it in the editor and saving
+    /// it again must hand back the same day.
+    func testSavingAnAllDayCountdownAgainDoesNotMoveIt() {
+        let app = launch(seed: "work")
+        let before = cardText(app, "Holiday")
+        XCTAssertTrue(before.contains("35 days"), before)
+        card(app, "Holiday").tap()
+        XCTAssertTrue(app.buttons["detail.edit"].waitForExistence(timeout: 10))
+        app.buttons["detail.edit"].tap()
+        let name = app.textFields["editor.name"]
+        XCTAssertTrue(name.waitForExistence(timeout: 10))
+        shot("editor-all-day")
+        app.buttons["editor.save"].tap()
+        waitGone(name, "the editor")
+        XCTAssertEqual(cardText(app, "Holiday"), before)
+    }
+
     func testEditingAReusableCountdown() {
         let app = launch(seed: "work")
         card(app, "Done work").tap()
@@ -275,6 +292,15 @@ final class FlowUITests: CurtainUITestCase {
         XCTAssertTrue(cardText(app, "Done work").contains("6 hours"))
         XCTAssertTrue(cardText(app, "Holiday").contains("35 days"))
         XCTAssertTrue(card(app, "Pizza").exists)
+    }
+
+    /// Countdowns saved by an earlier install that had no shared folder are brought over.
+    func testCountdownsFromAnEarlierInstallAreBroughtOver() {
+        let app = launch(extra: ["-UITestStranded"])
+        let text = cardText(app, "Done work")
+        XCTAssertTrue(text.contains("Ends 7:00 PM"), text)
+        // In the simulator the app does have its shared folder, so there is no warning about it.
+        XCTAssertFalse(app.descendants(matching: .any).matching(identifier: "notice.noshare").firstMatch.exists)
     }
 
     func testADamagedFileIsSetAsideNotOverwritten() {

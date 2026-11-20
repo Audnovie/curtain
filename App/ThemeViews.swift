@@ -10,9 +10,9 @@ struct ThemePreviewCard: View {
     var name = "Done work"
 
     var body: some View {
-        let event = Event(name: name, mode: .countdown, date: Date(timeIntervalSinceReferenceDate: 22_500),
+        let event = Event(name: name, mode: .countdown, date: Date(timeIntervalSinceReferenceDate: 26_100),
                           theme: theme, createdAt: Date(timeIntervalSinceReferenceDate: 0))
-        // Frozen at 6 hr, 15 min to go, so the preview doesn't move while colours are being picked.
+        // Frozen at 7 hr, 15 min to go, so the preview doesn't move while colours are being picked.
         EventCard(event: event, now: Date(timeIntervalSinceReferenceDate: 0))
             .frame(maxWidth: 190)
     }

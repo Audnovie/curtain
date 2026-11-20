@@ -57,6 +57,8 @@ struct CountdownWidget: Widget {
         .configurationDisplayName("Time left")
         .description("A countdown, with a block for every hour left.")
         .supportedFamilies([.accessoryRectangular, .accessoryInline, .systemSmall, .systemMedium])
+        // Keep the countdown's colours where iOS would otherwise strip them (StandBy).
+        .containerBackgroundRemovable(false)
     }
 }
 
@@ -71,6 +73,7 @@ struct SinceWidget: Widget {
         .configurationDisplayName("Time since")
         .description("How long it has been, with a block for every hour gone by.")
         .supportedFamilies([.accessoryRectangular, .accessoryInline, .systemSmall, .systemMedium])
+        .containerBackgroundRemovable(false)
     }
 }
 

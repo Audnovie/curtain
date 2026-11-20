@@ -40,10 +40,11 @@ public struct Bar: Equatable, Sendable {
     public var blocks: Int { full + (partial > 0 ? 1 : 0) }
 
     /// The bar for a span of `seconds`, using the smallest unit that needs at most `maxBlocks` blocks.
-    public static func forSpan(seconds: Int) -> Bar {
+    /// All-day events never go below a day a block (`smallest`).
+    public static func forSpan(seconds: Int, smallest: BarUnit = .hour) -> Bar {
         guard seconds > 0 else { return .empty }
         var unit = BarUnit.year
-        for u in BarUnit.allCases where seconds <= u.seconds * maxBlocks {
+        for u in BarUnit.allCases where u.seconds >= smallest.seconds && seconds <= u.seconds * maxBlocks {
             unit = u
             break
         }
@@ -87,8 +88,8 @@ public struct WidgetDisplay: Equatable, Sendable {
     public static func sample(mode: EventMode) -> WidgetDisplay {
         switch mode {
         case .countdown:
-            return WidgetDisplay(title: "Done work", timeText: "6 hr, 15 min",
-                                 bar: Bar(unit: .hour, full: 6, partial: 0.25), state: .running, mode: .countdown)
+            return WidgetDisplay(title: "Done work", timeText: "7 hr, 15 min",
+                                 bar: Bar(unit: .hour, full: 7, partial: 0.25), state: .running, mode: .countdown)
         case .since:
             return WidgetDisplay(title: "Started", timeText: "2 hr, 20 min",
                                  bar: Bar(unit: .hour, full: 2, partial: 1.0 / 3.0), state: .running, mode: .since)
@@ -160,7 +161,9 @@ public enum Display {
 
     public static func isFinished(_ event: Event, now: Date, calendar: Calendar) -> Bool {
         guard event.mode == .countdown else { return false }
-        if event.allDay { return Schedule.days(from: now, to: event.date, calendar: calendar) < 0 }
+        if event.allDay {
+            return Schedule.days(from: now, to: event.moment(calendar: calendar), calendar: calendar) < 0
+        }
         return TimeMath.millisLeft(until: event.date, now: now) <= 0
     }
 
@@ -190,15 +193,16 @@ public enum Display {
         let finished = WidgetDisplay(title: event.name, timeText: "Finished", bar: .empty, state: .finished,
                                      mode: event.mode, hint: event.reusable ? "Tap to set again" : nil)
         if event.allDay {
+            let day = event.moment(calendar: calendar)
             let d = event.mode == .countdown
-                ? Schedule.days(from: now, to: event.date, calendar: calendar)
-                : Schedule.days(from: event.date, to: now, calendar: calendar)
+                ? Schedule.days(from: now, to: day, calendar: calendar)
+                : Schedule.days(from: day, to: now, calendar: calendar)
             if event.mode == .countdown && d < 0 { return finished }
             if d <= 0 {
                 return WidgetDisplay(title: event.name, timeText: "Today", bar: .empty, state: .today, mode: event.mode)
             }
             return WidgetDisplay(title: event.name, timeText: plural(d, "day", "days"),
-                                 bar: Bar.forSpan(seconds: d * 86400), state: .running, mode: event.mode)
+                                 bar: Bar.forSpan(seconds: d * 86400, smallest: .day), state: .running, mode: event.mode)
         }
         guard let count = widgetCount(event, now: now) else { return finished }
         if count.units == 0 {
@@ -214,9 +218,7 @@ public enum Display {
     /// Nil when it never will (a countdown that has ended).
     public static func nextChange(event: Event, after t: Date, calendar: Calendar) -> Date? {
         if event.allDay {
-            if event.mode == .countdown && Schedule.days(from: t, to: event.date, calendar: calendar) < 0 {
-                return nil
-            }
+            if isFinished(event, now: t, calendar: calendar) { return nil }
             return Schedule.startOfNextDay(after: t, calendar: calendar)
         }
         switch event.mode {

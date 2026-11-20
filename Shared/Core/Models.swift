@@ -149,6 +149,8 @@ public struct Event: Equatable, Identifiable, Sendable {
     public var name: String
     public var mode: EventMode
     /// Countdown: when it ends. Time since: when it began. Always a whole minute.
+    /// An all-day event keeps its calendar day here, as noon UTC on that day; count with
+    /// `moment(calendar:)`, never with this directly.
     public var date: Date
     /// Counts whole days and ignores the time of day.
     public var allDay: Bool
@@ -178,20 +180,41 @@ public struct Event: Equatable, Identifiable, Sendable {
     public static let maxNameLength = 40
     public static let maxUsualTimes = 8
 
-    /// Tidies what came from the editor or from a saved file: a trimmed name, a whole-minute date,
-    /// usual times in order. `calendar` decides where a day begins for all-day events.
+    /// The moment this counts to or from, on `calendar`'s clock. For an all-day event that is the
+    /// start of its day there, whichever time zone it was saved in.
+    public func moment(calendar: Calendar) -> Date {
+        allDay ? Schedule.startOfDay(stamp: date, calendar: calendar) : date
+    }
+
+    /// Tidies a countdown before it is saved: a trimmed name, a whole-minute date (or an exact
+    /// saved day), usual times in order. Doing it twice changes nothing.
     public func normalized(calendar: Calendar) -> Event {
         var e = self
         let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
         e.name = String(trimmed.prefix(Event.maxNameLength))
         if e.name.isEmpty { e.name = mode == .countdown ? "Countdown" : "Time since" }
-        e.date = allDay ? calendar.startOfDay(for: date) : Schedule.wholeMinute(date)
+        e.date = allDay ? Schedule.tidy(dayStamp: date) : Schedule.wholeMinute(date)
         if mode == .since || allDay {
             e.reusable = false
             e.usualTimes = []
         }
         e.usualTimes = Schedule.tidy(usualTimes: e.usualTimes)
         return e
+    }
+
+    /// For the editor, whose date picker works on this phone's clock: an all-day event's saved
+    /// day becomes the start of that day here.
+    public func forEditing(calendar: Calendar) -> Event {
+        var e = self
+        e.date = moment(calendar: calendar)
+        return e
+    }
+
+    /// Back from the editor, ready to save: the day picked here becomes a saved day.
+    public func fromEditing(calendar: Calendar) -> Event {
+        var e = self
+        if allDay { e.date = Schedule.dayStamp(for: date, calendar: calendar) }
+        return e.normalized(calendar: calendar)
     }
 }
 

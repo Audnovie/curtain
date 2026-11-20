@@ -140,6 +140,31 @@ final class ScheduleTests: XCTestCase {
         XCTAssertEqual(Schedule.startOfNextDay(after: at(2026, 11, 1, 0, 30), calendar: cal), at(2026, 11, 2))
     }
 
+    /// An all-day event is saved as noon UTC on its day, which names the same day everywhere.
+    func testASavedDayIsTheSameDayInEveryTimeZone() {
+        let stamp = Schedule.dayStamp(for: at(2026, 12, 25, 18, 30), calendar: cal)
+        XCTAssertEqual(stamp, at(2026, 12, 25, 12, 0, calendar: utc()))
+        XCTAssertEqual(Schedule.dayStamp(for: at(2026, 12, 25, 0, 0), calendar: cal), stamp)
+        XCTAssertEqual(Schedule.dayStamp(for: at(2026, 12, 25, 23, 59, 59), calendar: cal), stamp)
+        XCTAssertEqual(Schedule.tidy(dayStamp: stamp), stamp)
+        XCTAssertEqual(Schedule.startOfDay(stamp: stamp, calendar: cal), at(2026, 12, 25))
+        for zone in ["America/Vancouver", "Europe/London", "Asia/Kathmandu", "Asia/Tokyo", "Pacific/Auckland",
+                     "Pacific/Kiritimati", "Pacific/Pago_Pago"] {
+            var there = Calendar(identifier: .gregorian)
+            there.timeZone = TimeZone(identifier: zone)!
+            let start = Schedule.startOfDay(stamp: stamp, calendar: there)
+            let c = there.dateComponents([.year, .month, .day, .hour, .minute], from: start)
+            XCTAssertEqual([c.year, c.month, c.day, c.hour, c.minute], [2026, 12, 25, 0, 0], zone)
+            // Picking that day on a phone there saves the same thing.
+            XCTAssertEqual(Schedule.dayStamp(for: start.addingTimeInterval(hms(13)), calendar: there), stamp, zone)
+        }
+        // A phone set to another kind of calendar still means the same day.
+        var buddhist = Calendar(identifier: .buddhist)
+        buddhist.timeZone = TimeZone(identifier: "Asia/Bangkok")!
+        XCTAssertEqual(Schedule.dayStamp(for: at(2026, 12, 25, 9, 0, calendar: utc()), calendar: buddhist), stamp)
+        XCTAssertEqual(Schedule.days(from: Schedule.startOfDay(stamp: stamp, calendar: buddhist), to: stamp, calendar: buddhist), 0)
+    }
+
     func testTidyUsualTimes() {
         XCTAssertEqual(Schedule.tidy(usualTimes: [1260, 1020, 1140, 1020, -5, 1440, 2000]), [1020, 1140, 1260])
         XCTAssertEqual(Schedule.tidy(usualTimes: Array(0..<30)).count, Event.maxUsualTimes)

@@ -43,8 +43,8 @@ struct BlockView: View {
     }
 }
 
-/// The time line of a face: our own words, or (only if iOS was late fetching the next stretch
-/// of a long countdown) a clock text that iOS keeps counting by itself.
+/// The time line of a face: our own words, or, while there is between an hour and a day on the
+/// clock, a text that iOS keeps counting by itself (see TimelineBuilder).
 struct TimeText: View {
     let text: String
     let live: Date?
@@ -128,8 +128,9 @@ struct HomeFace: View {
                 .opacity(0.9)
             Spacer(minLength: 2)
             if let live = live {
+                // iOS's own counting text comes as one piece, so it gets one line.
                 Text(live, style: .relative)
-                    .font(.system(size: 24, weight: .heavy, design: .rounded))
+                    .font(.system(size: wide ? 32 : 22, weight: .heavy, design: .rounded))
                     .lineLimit(1)
                     .minimumScaleFactor(0.5)
                     .widgetAccentable()

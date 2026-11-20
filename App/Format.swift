@@ -67,19 +67,20 @@ enum Fmt {
     /// The small line on a card: "Ends 9:00 PM", "Ends Mon, Nov 23", "Since Nov 1", "Tap to set".
     static func cardCaption(_ event: Event, now: Date) -> String {
         let cal = AppClock.calendar
-        let today = Schedule.days(from: now, to: event.date, calendar: cal) == 0
+        let date = event.moment(calendar: cal)
+        let today = Schedule.days(from: now, to: date, calendar: cal) == 0
         let finished = Display.isFinished(event, now: now, calendar: cal)
-        let when = today && !event.allDay ? time(event.date) : day(event.date, now: now)
+        let when = today && !event.allDay ? time(date) : day(date, now: now)
         switch event.mode {
         case .since:
-            return "Since " + (today && !event.allDay ? when : dayInSentence(event.date, now: now))
+            return "Since " + (today && !event.allDay ? when : dayInSentence(date, now: now))
         case .countdown:
-            if finished { return event.reusable ? "Tap to set again" : "Ended " + (today ? when : dayInSentence(event.date, now: now)) }
+            if finished { return event.reusable ? "Tap to set again" : "Ended " + (today ? when : dayInSentence(date, now: now)) }
             if event.allDay {
-                let d = day(event.date, now: now)
+                let d = day(date, now: now)
                 return (d == "Today" || d == "Tomorrow") ? d : "On " + d
             }
-            return "Ends " + (today ? when : dayInSentence(event.date, now: now))
+            return "Ends " + (today ? when : dayInSentence(date, now: now))
         }
     }
 
@@ -91,8 +92,9 @@ enum Fmt {
         case .since: verb = "Began"
         case .countdown: verb = finished ? "Ended" : "Ends"
         }
-        let d = dayInSentence(event.date, now: now)
-        return event.allDay ? "\(verb) \(d)" : "\(verb) \(d) at \(time(event.date))"
+        let date = event.moment(calendar: AppClock.calendar)
+        let d = dayInSentence(date, now: now)
+        return event.allDay ? "\(verb) \(d)" : "\(verb) \(d) at \(time(date))"
     }
 
     /// "in 4 hr, 16 min", for a time that a countdown could be set to.

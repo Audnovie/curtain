@@ -22,11 +22,20 @@ final class Store: ObservableObject {
         if AppClock.arguments.contains("-UITestReset") {
             try? FileManager.default.removeItem(at: location.file)
             try? FileManager.default.removeItem(at: location.widgetNote)
+            for older in SharedContainer.olderLocations(than: location) {
+                try? FileManager.default.removeItem(at: older.file)
+            }
         }
         if AppClock.arguments.contains("-UITestDamagedFile") {
             try? FileManager.default.createDirectory(at: location.folder, withIntermediateDirectories: true)
             try? Data("{ this is not a saved file".utf8).write(to: location.file)
         }
+        if AppClock.arguments.contains("-UITestStranded") {
+            // As if an earlier install had no shared folder and saved in the app's own.
+            let own = SharedContainer.ownLocation
+            try? StateFile.save(Store.seed("seven", now: AppClock.now, calendar: AppClock.calendar), to: own.file)
+        }
+        Store.bringOverOlderFile(to: location)
         var loaded = AppState()
         var message: String?
         var saving = true
@@ -53,6 +62,18 @@ final class Store: ObservableObject {
         if let seed = AppClock.value(after: "-UITestSeed") {
             state = Store.seed(seed, now: AppClock.now, calendar: AppClock.calendar)
             save()
+        }
+    }
+
+    /// If this copy of the app has no saved file where it now looks, but an earlier install left
+    /// one somewhere else it can reach, that file is copied over (and the old one left alone).
+    static func bringOverOlderFile(to location: SharedContainer.Location) {
+        let fm = FileManager.default
+        guard !fm.fileExists(atPath: location.file.path) else { return }
+        for older in SharedContainer.olderLocations(than: location) where fm.fileExists(atPath: older.file.path) {
+            guard case .loaded = StateFile.load(from: older.file) else { continue }
+            try? fm.createDirectory(at: location.folder, withIntermediateDirectories: true)
+            if (try? fm.copyItem(at: older.file, to: location.file)) != nil { return }
         }
     }
 
@@ -99,7 +120,8 @@ final class Store: ObservableObject {
         switch name {
         case "work":
             add(work)
-            add(Event(name: "Holiday", mode: .countdown, date: now.addingTimeInterval(35 * day), allDay: true,
+            add(Event(name: "Holiday", mode: .countdown,
+                      date: Schedule.dayStamp(for: now.addingTimeInterval(35 * day), calendar: calendar), allDay: true,
                       theme: .ocean, createdAt: made))
             add(Event(name: "Parcel arrives", mode: .countdown, date: now.addingTimeInterval(5 * day + 9 * 3600 + 20 * 60),
                       theme: .grape, createdAt: made))

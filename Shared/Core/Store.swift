@@ -110,8 +110,8 @@ extension AppState {
         func key(_ e: Event) -> Double {
             switch group(e) {
             case 0: return e.createdAt.timeIntervalSinceReferenceDate
-            case 1: return e.date.timeIntervalSinceReferenceDate
-            default: return -e.date.timeIntervalSinceReferenceDate
+            case 1: return e.moment(calendar: calendar).timeIntervalSinceReferenceDate
+            default: return -e.moment(calendar: calendar).timeIntervalSinceReferenceDate
             }
         }
         return events.sorted { a, b in
