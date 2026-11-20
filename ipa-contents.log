@@ -1,0 +1,52 @@
+build/dev/Build/Products/Release-iphoneos/Curtain.app:
+total 4400
+drwxr-xr-x   9 runner  staff      288 Nov 20 11:03 .
+drwxr-xr-x@ 11 runner  staff      352 Nov 20 11:03 ..
+-rw-r--r--   1 runner  staff     4373 Nov 20 11:03 AppIcon60x60@2x.png
+-rw-r--r--   1 runner  staff     5040 Nov 20 11:03 AppIcon76x76@2x~ipad.png
+-rw-r--r--   1 runner  staff    48680 Nov 20 11:03 Assets.car
+-rwxr-xr-x   1 runner  staff  2176752 Nov 20 11:03 Curtain
+-rw-r--r--   1 runner  staff     1178 Nov 20 11:03 Info.plist
+-rw-r--r--   1 runner  staff        8 Nov 20 11:03 PkgInfo
+drwxr-xr-x   3 runner  staff       96 Nov 20 11:03 PlugIns
+
+build/dev/Build/Products/Release-iphoneos/Curtain.app/PlugIns:
+total 0
+drwxr-xr-x  3 runner  staff   96 Nov 20 11:03 .
+drwxr-xr-x  9 runner  staff  288 Nov 20 11:03 ..
+drwxr-xr-x  5 runner  staff  160 Nov 20 11:03 CurtainWidgets.appex
+Dict {
+    CFBundleName = CurtainWidgets
+    DTSDKName = iphoneos26.5
+    DTXcode = 2660
+    DTSDKBuild = 23F81a
+    CFBundleDevelopmentRegion = en
+    CFBundleVersion = 1
+    BuildMachineOSBuild = 25G332
+    DTPlatformName = iphoneos
+    CFBundlePackageType = XPC!
+    CFBundleShortVersionString = 1.0
+    CFBundleSupportedPlatforms = Array {
+        iPhoneOS
+    }
+    CFBundleInfoDictionaryVersion = 6.0
+    CFBundleExecutable = CurtainWidgets
+    DTCompiler = com.apple.compilers.llvm.clang.1_0
+    UIRequiredDeviceCapabilities = Array {
+        arm64
+    }
+    MinimumOSVersion = 18.0
+    CFBundleIdentifier = io.github.audnovie.curtain.widgets
+    UIDeviceFamily = Array {
+        1
+    }
+    DTPlatformVersion = 26.5
+    DTXcodeBuild = 17F113
+    CFBundleDisplayName = Curtain
+    DTPlatformBuild = 23F81a
+    NSExtension = Dict {
+        NSExtensionPointIdentifier = com.apple.widgetkit-extension
+    }
+}
+3.0M	build/dev/Build/Products/Release-iphoneos/Curtain.app
+868K	build/dev/Build/Products/Release-iphoneos/Curtain.app/PlugIns/CurtainWidgets.appex

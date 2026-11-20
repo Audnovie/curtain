@@ -1,0 +1,86 @@
+Test Case '-[CurtainUITests.ColourUITests testPickAThemeAndMatchAWallpaper]' started.
+Test Case '-[CurtainUITests.ColourUITests testPickAThemeAndMatchAWallpaper]' passed (89.589 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 89.589 (89.594) seconds
+Test Case '-[CurtainUITests.DashboardUITests testDashboardShowsEveryKindOfCountdown]' started.
+NOTE dashboard: Done work, Reusable, 6 hours, 15 mins, Ends 9:00 PM | Parcel arrives, 5 days, 9 hrs, 20 mins, Ends Wed, Nov 25 | New phone, 3 days, 4 hrs, 59 mins, Since Mon, Nov 16
+Test Case '-[CurtainUITests.DashboardUITests testDashboardShowsEveryKindOfCountdown]' passed (26.996 seconds).
+Test Case '-[CurtainUITests.DashboardUITests testOneMinuteEitherSideOfTheHour]' started.
+Test Case '-[CurtainUITests.DashboardUITests testOneMinuteEitherSideOfTheHour]' passed (31.433 seconds).
+Test Case '-[CurtainUITests.DashboardUITests testSelectSeveralAndDelete]' started.
+Test Case '-[CurtainUITests.DashboardUITests testSelectSeveralAndDelete]' passed (33.333 seconds).
+Test Case '-[CurtainUITests.DashboardUITests testTenMinutesAtSixFifty]' started.
+NOTE at 6:50:30 with the end at 7:00: Done work, Reusable, 10 mins, Ends 7:00 PM
+Test Case '-[CurtainUITests.DashboardUITests testTenMinutesAtSixFifty]' passed (22.745 seconds).
+	 Executed 4 tests, with 0 failures (0 unexpected) in 114.508 (114.512) seconds
+Test Case '-[CurtainUITests.EditorUITests testEditingAReusableCountdown]' started.
+Test Case '-[CurtainUITests.EditorUITests testEditingAReusableCountdown]' passed (18.283 seconds).
+Test Case '-[CurtainUITests.EditorUITests testNewCountdownStartsAtTheNextHourNotMidnight]' started.
+Test Case '-[CurtainUITests.EditorUITests testNewCountdownStartsAtTheNextHourNotMidnight]' passed (17.734 seconds).
+Test Case '-[CurtainUITests.EditorUITests testSavingAnAllDayCountdownAgainDoesNotMoveIt]' started.
+Test Case '-[CurtainUITests.EditorUITests testSavingAnAllDayCountdownAgainDoesNotMoveIt]' passed (18.593 seconds).
+Test Case '-[CurtainUITests.EditorUITests testTimeSinceStartsNow]' started.
+Test Case '-[CurtainUITests.EditorUITests testTimeSinceStartsNow]' passed (15.637 seconds).
+	 Executed 4 tests, with 0 failures (0 unexpected) in 70.248 (70.251) seconds
+Test Case '-[CurtainUITests.FlowUITests testADamagedFileIsSetAsideNotOverwritten]' started.
+NOTE damaged file: Your saved countdowns couldn't be read, so they were set aside as state-unreadable-1795172073.json and the app started fresh. (it isn't in the form this app saves)
+Test Case '-[CurtainUITests.FlowUITests testADamagedFileIsSetAsideNotOverwritten]' passed (14.356 seconds).
+Test Case '-[CurtainUITests.FlowUITests testCountdownsAreStillThereAfterQuitting]' started.
+Test Case '-[CurtainUITests.FlowUITests testCountdownsAreStillThereAfterQuitting]' passed (17.033 seconds).
+Test Case '-[CurtainUITests.FlowUITests testCountdownsFromAnEarlierInstallAreBroughtOver]' started.
+Test Case '-[CurtainUITests.FlowUITests testCountdownsFromAnEarlierInstallAreBroughtOver]' passed (10.216 seconds).
+Test Case '-[CurtainUITests.FlowUITests testDeleteFromTheDetailSheet]' started.
+Test Case '-[CurtainUITests.FlowUITests testDeleteFromTheDetailSheet]' passed (19.181 seconds).
+Test Case '-[CurtainUITests.FlowUITests testMakeACountdownReusableAndRestartATimeSince]' started.
+Test Case '-[CurtainUITests.FlowUITests testMakeACountdownReusableAndRestartATimeSince]' passed (37.443 seconds).
+Test Case '-[CurtainUITests.FlowUITests testWidgetTapOpensItsCountdown]' started.
+Test Case '-[CurtainUITests.FlowUITests testWidgetTapOpensItsCountdown]' passed (19.156 seconds).
+	 Executed 6 tests, with 0 failures (0 unexpected) in 117.385 (117.392) seconds
+Test Case '-[CurtainUITests.ProbeUITests testWhatTheSystemClockTextSays]' started.
+NOTE PROBE identifier: 'probe.ready', label: 'probe'
+NOTE PROBE identifier: 'probe.relative.in-0h-0m-50s', label: '46 sec'
+NOTE PROBE identifier: 'probe.relative.in-1h-0m-50s', label: '1 hr, 0 min'
+NOTE PROBE identifier: 'probe.relative.in-2h-0m-50s', label: '2 hr, 0 min'
+NOTE PROBE identifier: 'probe.relative.in-5h-15m-50s', label: '5 hr, 15 min'
+NOTE PROBE identifier: 'probe.relative.in-23h-59m-50s', label: '23 hr, 59 min'
+NOTE PROBE identifier: 'probe.relative.in-24h-0m-50s', label: '1 day'
+NOTE PROBE identifier: 'probe.relative.in-25h-0m-50s', label: '1 day, 1 hr'
+NOTE PROBE identifier: 'probe.relative.in-48h-0m-50s', label: '2 days'
+NOTE PROBE identifier: 'probe.relative.in-7d-0h-0m-50s', label: '7 days'
+NOTE PROBE identifier: 'probe.relative.in-8d-5h-30m', label: '8 days, 5 hr'
+NOTE PROBE identifier: 'probe.relative.in-40d-3h', label: '1 mth, 10 days'
+NOTE PROBE identifier: 'probe.relative.ago-1h-0m-10s', label: '1 hr, 0 min'
+NOTE PROBE identifier: 'probe.relative.ago-2h-20m-30s', label: '2 hr, 20 min'
+NOTE PROBE identifier: 'probe.relative.ago-25h-30m', label: '1 day, 1 hr'
+NOTE PROBE identifier: 'probe.relative.ago-9d-2h-30m', label: '9 days, 2 hr'
+NOTE PROBE identifier: 'probe.upper', label: '5 HR, 15 MIN'
+NOTE PROBE identifier: 'probe.offset.in-0h-0m-50s', label: '0 minutes'
+NOTE PROBE identifier: 'probe.offset.in-0h-10m-50s', label: '10 minutes'
+NOTE PROBE identifier: 'probe.offset.in-2h-0m-50s', label: '2 hours, 0 minutes'
+NOTE PROBE identifier: 'probe.offset.in-5h-15m-50s', label: '5 hours, 15 minutes'
+NOTE PROBE identifier: 'probe.offset.ago-2h-20m-30s', label: '2 hours, 20 minutes'
+NOTE PROBE identifier: 'probe.face.inline', label: 'Done work · 5 hr, 15 min'
+NOTE PROBE identifier: 'probe.face.lock', label: 'Done work, 5 hr, 15 min'
+NOTE PROBE identifier: 'probe.face.lock-since', label: 'Started, 2 hr, 20 min'
+NOTE PROBE identifier: 'probe.face.home', label: 'Done work, 5 hr, 15 min'
+NOTE PROBE identifier: 'probe.face.home-wide', label: 'Done work, 5 hr, 15 min, Ends 9:00 PM'
+Test Case '-[CurtainUITests.ProbeUITests testWhatTheSystemClockTextSays]' passed (12.480 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 12.480 (12.480) seconds
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheHomeScreen]' started.
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheHomeScreen]' skipped (0.284 seconds).
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheLockScreen]' started.
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheLockScreen]' skipped (0.263 seconds).
+	 Executed 2 tests, with 2 tests skipped and 0 failures (0 unexpected) in 0.546 (0.548) seconds
+Test Case '-[CurtainUITests.ReusableUITests testAUsualTimeThatHasPassedMeansTomorrow]' started.
+Test Case '-[CurtainUITests.ReusableUITests testAUsualTimeThatHasPassedMeansTomorrow]' passed (15.394 seconds).
+Test Case '-[CurtainUITests.ReusableUITests testSetAnEndedCountdownToAUsualTime]' started.
+Test Case '-[CurtainUITests.ReusableUITests testSetAnEndedCountdownToAUsualTime]' passed (15.485 seconds).
+Test Case '-[CurtainUITests.ReusableUITests testStartFromNothingWithDoneWork]' started.
+Test Case '-[CurtainUITests.ReusableUITests testStartFromNothingWithDoneWork]' passed (13.864 seconds).
+	 Executed 3 tests, with 0 failures (0 unexpected) in 44.744 (44.746) seconds
+Test Case '-[CurtainUITests.WidgetGalleryUITests testSeeTheWidgets]' started.
+NOTE widget status: A widget last updated, Not yet
+Test Case '-[CurtainUITests.WidgetGalleryUITests testSeeTheWidgets]' passed (21.319 seconds).
+	 Executed 1 test, with 0 failures (0 unexpected) in 21.319 (21.320) seconds
+	 Executed 22 tests, with 2 tests skipped and 0 failures (0 unexpected) in 470.819 (470.853) seconds
+	 Executed 22 tests, with 2 tests skipped and 0 failures (0 unexpected) in 470.819 (470.855) seconds
+** TEST EXECUTE SUCCEEDED **

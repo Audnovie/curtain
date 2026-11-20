@@ -1,0 +1,166 @@
+Attributes: Application, 0x1143f2bc0, pid: 1381, label: ' '
+Element subtree:
+ →Application, 0x1143f2bc0, pid: 1381, label: ' '
+    Window, 0x1143f2d00, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1143f2e40, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1143f2f80, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x1143f30c0, {{0.0, 0.0}, {402.0, 100.0}}
+        Other, 0x1143f3200, {{0.0, 0.0}, {402.0, 874.0}}, identifier: 'Home screen icons'
+          Other, 0x1143f3340, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1143f3480, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1143f35c0, {{1206.0, 0.0}, {402.0, 874.0}}
+              Button, 0x1143f3700, {{39.0, 19.0}, {66.0, 28.0}}, label: 'Edit'
+              Button, 0x1143f3840, {{297.0, 19.0}, {66.0, 28.0}}, label: 'Done'
+              Icon, 0x1143f3980, {{0.0, 0.0}, {0.0, 0.0}}
+                Icon, 0x1143f3ac0, {{24.3, 88.0}, {168.3, 191.0}}, identifier: 'Curtain', label: 'Curtain', value: Widget
+                  Button, 0x1143f3c00, {{19.6, 83.3}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                Icon, 0x1143f3d40, {{209.7, 88.0}, {168.3, 191.0}}, identifier: 'Maps', label: 'Maps', value: Widget
+                  Button, 0x1143f3e80, {{205.0, 83.3}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                Icon, 0x1128cc000, {{24.3, 288.7}, {168.3, 191.0}}, identifier: 'Calendar', label: 'Calendar', value: Widget, Stack
+                  Button, 0x1128cc140, {{19.6, 284.0}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                Icon, 0x1128cc280, {{211.3, 288.7}, {72.0, 90.7}}, identifier: 'Calendar', label: 'Calendar', value: Friday, November 20
+                  Button, 0x1128cc3c0, {{205.7, 280.7}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                Icon, 0x1128cc500, {{306.0, 288.7}, {68.0, 90.7}}, identifier: 'Photos', label: 'Photos'
+                  Button, 0x1128cc640, {{298.0, 280.7}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                Icon, 0x1128cc780, {{206.7, 389.0}, {81.7, 90.7}}, identifier: 'Reminders', label: 'Reminders'
+                  Button, 0x1128cc8c0, {{205.7, 381.0}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                Icon, 0x1128cca00, {{306.0, 389.0}, {68.0, 90.7}}, identifier: 'News', label: 'News'
+                  Button, 0x1128ccb40, {{298.0, 381.0}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                Icon, 0x1128ccc80, {{28.3, 489.3}, {68.0, 90.7}}, identifier: 'Maps', label: 'Maps'
+                  Button, 0x1128ccdc0, {{20.3, 481.3}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                Icon, 0x1128ccf00, {{120.7, 489.3}, {68.0, 90.7}}, identifier: 'Health', label: 'Health'
+                  Button, 0x1128cd040, {{112.7, 481.3}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                Icon, 0x1128cd180, {{213.7, 489.3}, {68.0, 90.7}}, identifier: 'Wallet', label: 'Wallet'
+                  Button, 0x1128cd2c0, {{205.7, 481.3}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                Icon, 0x1128cd400, {{305.7, 489.3}, {68.3, 90.7}}, identifier: 'Settings', label: 'Settings'
+                  Button, 0x1128cd540, {{298.0, 481.3}, {26.0, 26.0}}, identifier: 'DeleteButton'
+              Icon, 0x1128cd680, {{0.0, 0.0}, {0.0, 0.0}}
+                Icon, 0x1128cd7c0, {{0.0, 0.0}, {0.0, 0.0}}, identifier: 'Fitness', label: 'Fitness'
+                Icon, 0x1128cd900, {{0.0, 0.0}, {0.0, 0.0}}, identifier: 'Watch', label: 'Watch'
+                Icon, 0x1128cda40, {{0.0, 0.0}, {0.0, 0.0}}, identifier: 'Contacts', label: 'Contacts'
+                Icon, 0x1128cdb80, {{0.0, 0.0}, {0.0, 0.0}}, identifier: 'Files', label: 'Files'
+                Icon, 0x1128cdcc0, {{0.0, 0.0}, {0.0, 0.0}}, identifier: 'Preview', label: 'Preview'
+                Icon, 0x1128cde00, {{0.0, 0.0}, {0.0, 0.0}}, identifier: 'Utilities', label: 'Utilities folder'
+                  Icon, 0x1128cdf40, {{0.0, 0.0}, {0.0, 0.0}}, identifier: 'Passwords', label: 'Passwords'
+                  Icon, 0x1128ce080, {{0.0, 0.0}, {0.0, 0.0}}, identifier: 'Shortcuts', label: 'Shortcuts'
+                Icon, 0x1128ce1c0, {{0.0, 0.0}, {0.0, 0.0}}, identifier: 'CurtainUITests-Runner', label: 'CurtainUITests-Runner'
+                Icon, 0x1128ce300, {{0.0, 0.0}, {0.0, 0.0}}, identifier: 'Curtain', label: 'Curtain'
+              Icon, 0x1128ce440, {{0.0, 0.0}, {0.0, 0.0}}
+              Other, 0x1128ce580, {{162.8, 704.0}, {76.4, 29.4}}, identifier: 'spotlight-pill', value: Page 1 of 3
+                PageIndicator, 0x1128ce6c0, {{162.0, 703.7}, {78.0, 35.0}}, identifier: 'Page control', value: Page 1 of 3
+                Other, 0x1128ce800, {{162.8, 704.0}, {76.4, 29.4}}, identifier: 'spotlight-pill'
+                  Other, 0x1128ce940, {{162.8, 704.0}, {76.4, 29.4}}
+                    Image, 0x1128cea80, {{174.2, 713.1}, {11.1, 10.5}}, identifier: 'magnifyingglass', label: 'Search'
+                    StaticText, 0x1128cebc0, {{188.3, 711.5}, {39.5, 14.0}}, label: 'Search'
+              Other, 0x1128ced00, {{0.0, 753.7}, {402.0, 120.3}}
+                Other, 0x1128cee40, {{17.0, 753.7}, {368.0, 103.3}}
+                  Other, 0x1128cef80, {{0.0, 753.7}, {402.0, 103.3}}, label: 'Dock'
+                    Other, 0x1128cf0c0, {{0.0, 753.7}, {402.0, 103.3}}
+                    Icon, 0x1128cf200, {{123.0, 771.3}, {68.0, 68.0}}, identifier: 'Safari', label: 'Safari'
+                      Button, 0x1128cf340, {{115.0, 763.3}, {26.0, 26.0}}, identifier: 'DeleteButton'
+                    Icon, 0x1128cf480, {{211.0, 771.3}, {68.0, 68.0}}, identifier: 'Messages', label: 'Messages'
+                      Button, 0x1128cf5c0, {{203.0, 763.3}, {26.0, 26.0}}, identifier: 'DeleteButton'
+          Other, 0x1128cf700, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1128cf840, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1128cf980, {{0.0, 0.0}, {402.0, 874.0}}
+                Other, 0x1128cfac0, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1128cfc00, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x1128cfd40, {{0.0, 0.0}, {402.0, 874.0}}
+                Other, 0x1128cfe80, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1146b8000, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1146b8140, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146b8280, {{0.0, 0.0}, {402.0, 874.0}}
+                Other, 0x1146b83c0, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1146b8500, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x1146b8640, {{0.0, 0.0}, {402.0, 874.0}}
+                Other, 0x1146b8780, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1146b88c0, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1146b8a00, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146b8b40, {{0.0, 0.0}, {402.0, 874.0}}
+                Other, 0x1146b8c80, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1146b8dc0, {{0.0, 0.0}, {402.0, 874.0}}
+                    Other, 0x1146b8f00, {{0.0, 0.0}, {402.0, 874.0}}
+                Other, 0x1146b9040, {{0.0, 0.0}, {402.0, 874.0}}
+                  Other, 0x1146b9180, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1146b92c0, {{0.0, 0.0}, {402.0, 874.0}}
+    Window, 0x1146b9400, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1146b9540, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1146b9680, {{0.0, 0.0}, {402.0, 874.0}}
+    Window, 0x1146b97c0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1146b9900, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1146b9a40, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x1146b9b80, {{138.3, 14.0}, {125.3, 36.7}}
+            Other, 0x1146b9cc0, {{138.3, 14.0}, {125.3, 36.7}}
+    Window, 0x1146b9e00, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1146b9f40, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1146ba080, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x1146ba1c0, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1146ba300, {{138.3, 14.0}, {125.3, 36.7}}
+              Other, 0x1146ba440, {{138.3, 14.0}, {125.3, 36.7}}
+              Other, 0x1146ba580, {{138.3, 14.0}, {125.3, 36.7}}
+                Other, 0x1146ba6c0, {{138.3, 14.0}, {125.3, 36.7}}
+              Other, 0x1146ba800, {{139.3, 15.0}, {123.3, 34.7}}
+          Other, 0x1146ba940, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1146baa80, {{138.3, 14.0}, {125.3, 36.7}}
+              Other, 0x1146babc0, {{138.3, 14.0}, {125.3, 36.7}}
+            Other, 0x1146bad00, {{138.3, 14.0}, {125.3, 36.7}}
+              Other, 0x1146bae40, {{139.0, 14.7}, {124.0, 35.3}}
+          Other, 0x1146baf80, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1146bb0c0, {{138.3, 14.0}, {125.3, 36.7}}
+              Other, 0x1146bb200, {{128.3, 10.0}, {145.3, 52.0}}
+              Other, 0x1146bb340, {{138.3, 14.0}, {125.3, 36.7}}
+                Other, 0x1146bb480, {{138.3, 14.0}, {125.3, 36.7}}
+                  Other, 0x1146bb5c0, {{138.3, 14.0}, {125.3, 36.7}}
+          Other, 0x1146bb700, {{218.0, 28.0}, {9.0, 9.0}}
+    Window, 0x1146bb840, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1146bb980, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1146bbac0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x1146bbc00, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1146bbd40, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bbe80, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bc000, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bc140, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bc280, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bc3c0, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bc500, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bc640, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1146bc780, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1146bc8c0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x1146bca00, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1146bcb40, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bcc80, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bcdc0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1146bcf00, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x1146bd040, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x1146bd180, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bd2c0, {{0.0, 0.0}, {402.0, 874.0}}
+              Other, 0x1146bd400, {{0.0, 0.0}, {402.0, 874.0}}
+    Window (Main), 0x1146bd540, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1146bd680, {{0.0, 0.0}, {402.0, 874.0}}
+    Window, 0x1146bd7c0, {{0.0, 0.0}, {134.0, 291.3}}
+      Other, 0x1146bd900, {{0.0, 0.0}, {134.0, 291.3}}
+        Other, 0x1146bda40, {{0.0, 0.0}, {134.0, 291.3}}
+    Window, 0x1146bdb80, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1146bdcc0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1146bde00, {{0.0, 0.0}, {402.0, 874.0}}
+    Window, 0x1146bdf40, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1146be080, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x1146be1c0, {{0.0, 0.0}, {402.0, 874.0}}
+    Window, 0x1146be300, {{0.0, 0.0}, {134.0, 291.3}}
+      Other, 0x1146be440, {{0.0, 0.0}, {134.0, 291.3}}
+        Other, 0x1146be580, {{0.0, 0.0}, {134.0, 291.3}}
+    Window, 0x1146be6c0, {{0.0, 0.0}, {402.0, 874.0}}
+      StatusBar, 0x1146be800, {{0.0, 0.0}, {402.0, 54.0}}
+    Window, 0x1146be940, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1146bea80, {{0.0, 0.0}, {402.0, 874.0}}
+    Window, 0x1146bebc0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1146bed00, {{0.0, 0.0}, {402.0, 874.0}}
+    Window, 0x1146bee40, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x1146bef80, {{0.0, 0.0}, {402.0, 874.0}}
+Path to element:
+ →Application, 0x1143f2bc0, pid: 1381, label: ' '
+Query chain:
+ →Find: Application 'com.apple.springboard'
+  Output: {
+    Application, 0x1146bf0c0, pid: 1381, label: ' '
+  }

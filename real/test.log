@@ -1,0 +1,14 @@
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheHomeScreen]' started.
+NOTE REAL app says: Done work, Reusable, 10 hours, 2 mins, Ends 9:00 PM | New phone, 3 days, 4 hrs, 59 mins, Since Tue, Nov 17
+NOTE REAL widget note: {"events":7,"kind":"countdown","at":"2026-11-20T10:59:24Z","family":"systemSmall"}
+NOTE REAL on the Home Screen: 
+/Users/runner/work/curtain/curtain/UITests/RealWidgetUITests.swift:183: error: -[CurtainUITests.RealWidgetUITests testWidgetOnTheHomeScreen] : XCTAssertFalse failed - the widget isn't showing the countdown
+NOTE REAL app's widget status: A widget last updated, just now
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheHomeScreen]' failed (115.407 seconds).
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheLockScreen]' started.
+NOTE REAL app says: Done work, Reusable, 10 hours, Ends 9:00 PM | New phone, 3 days, 4 hrs, 59 mins, Since Tue, Nov 17
+/Users/runner/work/curtain/curtain/UITests/RealWidgetUITests.swift:224: error: -[CurtainUITests.RealWidgetUITests testWidgetOnTheLockScreen] : failed - the Lock Screen didn't offer Customize
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheLockScreen]' failed (66.857 seconds).
+	 Executed 2 tests, with 2 failures (0 unexpected) in 182.264 (182.267) seconds
+	 Executed 2 tests, with 2 failures (0 unexpected) in 182.264 (182.272) seconds
+	 Executed 2 tests, with 2 failures (0 unexpected) in 182.264 (182.277) seconds
