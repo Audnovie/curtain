@@ -115,6 +115,18 @@ struct EventEditorView: View {
                 if !isNew {
                     Section {
                         Button("Delete", role: .destructive) { confirmingDelete = true }
+                            .accessibilityIdentifier("editor.delete")
+                            .confirmationDialog("Delete \u{201C}\(draft.name)\u{201D}?", isPresented: $confirmingDelete,
+                                                titleVisibility: .visible) {
+                                Button("Delete", role: .destructive) {
+                                    let id = draft.id
+                                    store.update { $0.delete(ids: [id]) }
+                                    dismiss()
+                                }
+                                Button("Cancel", role: .cancel) {}
+                            } message: {
+                                Text("This can't be undone.")
+                            }
                     }
                 }
             }
@@ -137,15 +149,6 @@ struct EventEditorView: View {
                 } else if mode == .countdown && isNew && draft.date <= now {
                     draft.date = Schedule.defaultCountdownDate(now: now, calendar: AppClock.calendar)
                 }
-            }
-            .confirmationDialog("Delete \u{201C}\(draft.name)\u{201D}?", isPresented: $confirmingDelete, titleVisibility: .visible) {
-                Button("Delete", role: .destructive) {
-                    store.update { $0.delete(ids: [draft.id]) }
-                    dismiss()
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This can't be undone.")
             }
         }
     }

@@ -29,6 +29,12 @@ class CurtainUITestCase: XCTestCase {
         try? png.write(to: dir.appendingPathComponent(name + ".png"))
     }
 
+    /// iOS writes times as "9:00 PM" with a narrow no-break space before PM. For comparing, make
+    /// every such space an ordinary one.
+    func plain(_ text: String) -> String {
+        text.replacingOccurrences(of: "\u{202F}", with: " ").replacingOccurrences(of: "\u{00A0}", with: " ")
+    }
+
     func card(_ app: XCUIApplication, _ name: String) -> XCUIElement {
         app.buttons["card." + name]
     }
@@ -37,7 +43,7 @@ class CurtainUITestCase: XCTestCase {
     func cardText(_ app: XCUIApplication, _ name: String, file: StaticString = #filePath, line: UInt = #line) -> String {
         let c = card(app, name)
         XCTAssertTrue(c.waitForExistence(timeout: 10), "no card called \(name)", file: file, line: line)
-        return c.label
+        return plain(c.label)
     }
 
     func waitGone(_ element: XCUIElement, _ what: String, file: StaticString = #filePath, line: UInt = #line) {
@@ -146,11 +152,12 @@ final class ReusableUITests: CurtainUITestCase {
         card(app, "Done work").tap()
         let seven = app.buttons["usual.1140"]
         XCTAssertTrue(seven.waitForExistence(timeout: 10))
-        XCTAssertTrue(seven.label.contains("7:00 PM"), seven.label)
-        XCTAssertTrue(seven.label.contains("Today"), seven.label)
-        XCTAssertTrue(seven.label.contains("in 4 hr, 15 min"), seven.label)
-        XCTAssertTrue(app.buttons["usual.1020"].label.contains("5:00 PM"))
-        XCTAssertTrue(app.buttons["usual.1260"].label.contains("9:00 PM"))
+        let sevenText = plain(seven.label)
+        XCTAssertTrue(sevenText.contains("7:00 PM"), sevenText)
+        XCTAssertTrue(sevenText.contains("Today"), sevenText)
+        XCTAssertTrue(sevenText.contains("in 4 hr, 15 min"), sevenText)
+        XCTAssertTrue(plain(app.buttons["usual.1020"].label).contains("5:00 PM"))
+        XCTAssertTrue(plain(app.buttons["usual.1260"].label).contains("9:00 PM"))
         shot("reusable-sheet")
         seven.tap()
         waitGone(seven, "the sheet")
@@ -231,8 +238,9 @@ final class EditorUITests: CurtainUITestCase {
         shot("editor-reusable")
         app.swipeUp()
         // Its usual times are listed, each with a remove button.
-        XCTAssertTrue(app.staticTexts["7:00 PM"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["9:00 PM"].exists)
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH '7:00'")).firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH '9:00'")).firstMatch.exists)
+        XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Remove 7:00'")).firstMatch.exists)
         shot("editor-reusable-2")
     }
 }

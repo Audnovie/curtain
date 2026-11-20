@@ -80,30 +80,31 @@ struct EventDetailView: View {
                 Section {
                     Button("Start again from now") { confirmingRestart = true }
                         .accessibilityIdentifier("detail.restart")
+                        .confirmationDialog("Start \u{201C}\(event.name)\u{201D} again from now?",
+                                            isPresented: $confirmingRestart, titleVisibility: .visible) {
+                            Button("Start again") {
+                                let now = AppClock.now
+                                store.update { _ = $0.restartSince(id: event.id, from: now, now: now) }
+                            }
+                            Button("Cancel", role: .cancel) {}
+                        }
                 }
             }
 
             Section {
                 Button("Delete", role: .destructive) { confirmingDelete = true }
                     .accessibilityIdentifier("detail.delete")
+                    .confirmationDialog("Delete \u{201C}\(event.name)\u{201D}?", isPresented: $confirmingDelete,
+                                        titleVisibility: .visible) {
+                        Button("Delete", role: .destructive) {
+                            store.update { $0.delete(ids: [event.id]) }
+                            dismiss()
+                        }
+                        Button("Cancel", role: .cancel) {}
+                    } message: {
+                        Text("This can't be undone.")
+                    }
             }
-        }
-        .confirmationDialog("Delete \u{201C}\(event.name)\u{201D}?", isPresented: $confirmingDelete, titleVisibility: .visible) {
-            Button("Delete", role: .destructive) {
-                store.update { $0.delete(ids: [event.id]) }
-                dismiss()
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("This can't be undone.")
-        }
-        .confirmationDialog("Start \u{201C}\(event.name)\u{201D} again from now?", isPresented: $confirmingRestart,
-                            titleVisibility: .visible) {
-            Button("Start again") {
-                let now = AppClock.now
-                store.update { _ = $0.restartSince(id: event.id, from: now, now: now) }
-            }
-            Button("Cancel", role: .cancel) {}
         }
     }
 
@@ -120,7 +121,7 @@ struct EventDetailView: View {
                         .foregroundStyle(Color.primary)
                     Text("\(Fmt.day(date, now: now)), \(Fmt.until(date, now: now))")
                         .font(.footnote)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Color.secondary)
                 }
                 Spacer()
                 Image(systemName: running ? "checkmark.circle.fill" : "play.circle.fill")

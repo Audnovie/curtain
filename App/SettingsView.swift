@@ -161,15 +161,18 @@ struct WidgetGalleryView: View {
             Section {
                 ForEach(WidgetGalleryView.moments, id: \.0) { moment in
                     HStack {
-                        Text(moment.0).font(.footnote).foregroundStyle(.secondary).frame(width: 96, alignment: .leading)
+                        Text(moment.0)
+                            .font(.footnote)
+                            .foregroundStyle(Color.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                         LockRectFace(display: moment.1)
                             .foregroundStyle(.white)
                             .frame(width: 160, height: 72)
                             .padding(10)
                             .background(LockScreenMock<EmptyView, EmptyView>.wallpaper)
                             .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                            .environment(\.colorScheme, .dark)
                     }
-                    .environment(\.colorScheme, .dark)
                 }
             } header: {
                 Text("Other moments")
@@ -216,7 +219,7 @@ struct LockScreenMock<Inline: View, Rect: View>: View {
             inline()
                 .font(.system(size: 17, weight: .semibold))
                 .lineLimit(1)
-            Text(Fmt.time(now).replacingOccurrences(of: " AM", with: "").replacingOccurrences(of: " PM", with: ""))
+            Text(Fmt.clockDigits(now))
                 .font(.system(size: 78, weight: .semibold, design: .rounded))
                 .opacity(0.9)
             HStack {

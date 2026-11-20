@@ -64,23 +64,18 @@ struct DashboardView: View {
                     .environment(\.timeZone, AppClock.timeZone)
                     .environment(\.calendar, AppClock.calendar)
             }
-            .confirmationDialog(deleteTitle, isPresented: $confirmingDelete, titleVisibility: .visible) {
-                Button("Delete", role: .destructive) {
-                    let ids = selection
-                    store.update { $0.delete(ids: ids) }
-                    stopSelecting()
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("This can't be undone.")
-            }
-            .onChange(of: store.openRequest) { _, id in
-                guard let id = id else { return }
-                stopSelecting()
-                sheet = .detail(id)
-                store.openRequest = nil
-            }
+            .onChange(of: store.openRequest) { _, _ in openRequested() }
+            // A widget tap that launched the app arrives before this view is listening.
+            .onAppear { openRequested() }
         }
+    }
+
+    /// Opens the countdown a widget asked for.
+    private func openRequested() {
+        guard let id = store.openRequest else { return }
+        store.openRequest = nil
+        stopSelecting()
+        sheet = .detail(id)
     }
 
     private var deleteTitle: String {
@@ -155,6 +150,16 @@ struct DashboardView: View {
             }
             .disabled(selection.isEmpty)
             .accessibilityIdentifier("select.delete")
+            .confirmationDialog(deleteTitle, isPresented: $confirmingDelete, titleVisibility: .visible) {
+                Button("Delete", role: .destructive) {
+                    let ids = selection
+                    store.update { $0.delete(ids: ids) }
+                    stopSelecting()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                Text("This can't be undone.")
+            }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 14)

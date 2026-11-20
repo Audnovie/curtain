@@ -26,6 +26,13 @@ enum Fmt {
         timeFormatter.string(from: date)
     }
 
+    /// "2:45", the way the Lock Screen clock shows it (no AM or PM).
+    static func clockDigits(_ date: Date) -> String {
+        let pattern = DateFormatter.dateFormat(fromTemplate: "jmm", options: 0, locale: Locale.autoupdatingCurrent) ?? "h:mm"
+        let digitsOnly = pattern.replacingOccurrences(of: "a", with: "").trimmingCharacters(in: .whitespaces)
+        return formatter { $0.dateFormat = digitsOnly }.string(from: date)
+    }
+
     /// "5:00 PM" for 1020 minutes after midnight.
     static func time(minuteOfDay: Int) -> String {
         var c = DateComponents()

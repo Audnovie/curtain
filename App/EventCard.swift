@@ -24,7 +24,7 @@ struct EventCard: View {
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
                 Spacer(minLength: 0)
-                if event.reusable {
+                if event.reusable && !selecting {
                     Image(systemName: "arrow.clockwise")
                         .font(.system(size: 13, weight: .bold))
                         .opacity(0.8)
@@ -60,7 +60,7 @@ struct EventCard: View {
         .frame(maxWidth: .infinity, minHeight: large ? 190 : 150, alignment: .topLeading)
         .background(theme.fill)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-        .opacity(card.state == .finished && !selecting ? 0.62 : 1)
+        .opacity(card.state == .finished && !event.reusable && !selecting ? 0.62 : 1)
         .overlay(alignment: .topTrailing) {
             if selecting {
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
