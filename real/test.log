@@ -1,0 +1,11 @@
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheHomeScreen]' started.
+NOTE REAL app says: Done work, Reusable, 11 hours, 16 mins, Ends 9:00 PM | New phone, 3 days, 5 hrs, Since Tue, Nov 17
+/Users/runner/work/curtain/curtain/UITests/RealWidgetUITests.swift:115: error: -[CurtainUITests.RealWidgetUITests testWidgetOnTheHomeScreen] : failed - couldn't get the Home Screen into editing mode
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheHomeScreen]' failed (47.719 seconds).
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheLockScreen]' started.
+NOTE REAL app says: Done work, Reusable, 11 hours, 16 mins, Ends 9:00 PM | New phone, 3 days, 4 hrs, 59 mins, Since Tue, Nov 17
+/Users/runner/work/curtain/curtain/UITests/RealWidgetUITests.swift:223: error: -[CurtainUITests.RealWidgetUITests testWidgetOnTheLockScreen] : failed - no widget row to tap on the Lock Screen
+Test Case '-[CurtainUITests.RealWidgetUITests testWidgetOnTheLockScreen]' failed (69.641 seconds).
+	 Executed 2 tests, with 2 failures (0 unexpected) in 117.360 (117.366) seconds
+	 Executed 2 tests, with 2 failures (0 unexpected) in 117.360 (117.369) seconds
+	 Executed 2 tests, with 2 failures (0 unexpected) in 117.360 (117.375) seconds
