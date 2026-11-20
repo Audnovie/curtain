@@ -208,7 +208,7 @@ struct WidgetGalleryView: View {
 
     /// Examples of the states a Lock Screen widget goes through.
     static let moments: [(String, WidgetDisplay)] = [
-        ("A full shift", WidgetDisplay(title: "Done work", timeText: "8 hr", bar: Bar(unit: .hour, full: 8, partial: 0),
+        ("A full shift", WidgetDisplay(title: "Done work", timeText: "8 hr, 0 min", bar: Bar(unit: .hour, full: 8, partial: 0),
                                       state: .running, mode: .countdown)),
         ("Last hour", WidgetDisplay(title: "Done work", timeText: "42 min", bar: Bar(unit: .hour, full: 0, partial: 0.7),
                                    state: .running, mode: .countdown)),

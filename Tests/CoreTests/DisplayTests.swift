@@ -18,8 +18,9 @@ final class DisplayTests: XCTestCase {
         XCTAssertEqual(text(left: hms(6, 16, 0)), "6 hr, 16 min")
         XCTAssertEqual(text(left: hms(6, 16, 40)), "6 hr, 17 min")
         XCTAssertEqual(text(left: hms(6, 15, 59) + 0.5), "6 hr, 16 min")
-        XCTAssertEqual(text(left: hms(6)), "6 hr")
-        XCTAssertEqual(text(left: hms(0, 59, 10)), "1 hr")
+        // Whole hours keep their "0 min", the way iOS writes it in its own counting text.
+        XCTAssertEqual(text(left: hms(6)), "6 hr, 0 min")
+        XCTAssertEqual(text(left: hms(0, 59, 10)), "1 hr, 0 min")
         XCTAssertEqual(text(left: hms(0, 59, 0)), "59 min")
         XCTAssertEqual(text(left: hms(0, 10, 0)), "10 min")
         XCTAssertEqual(text(left: hms(0, 9, 30)), "10 min")
@@ -47,7 +48,7 @@ final class DisplayTests: XCTestCase {
         XCTAssertEqual(text(passed: 60), "1 min")
         XCTAssertEqual(text(passed: hms(0, 10, 59)), "10 min")
         XCTAssertEqual(text(passed: hms(2, 20, 30)), "2 hr, 20 min")
-        XCTAssertEqual(text(passed: hms(3)), "3 hr")
+        XCTAssertEqual(text(passed: hms(3)), "3 hr, 0 min")
         XCTAssertEqual(text(passed: hms(23, 59, 59)), "23 hr, 59 min")
         XCTAssertEqual(text(passed: hms(24)), "1 day")
         XCTAssertEqual(text(passed: hms(3 * 24 + 4, 59)), "3 days, 4 hr")
@@ -131,9 +132,11 @@ final class DisplayTests: XCTestCase {
             let widget = Display.widget(event: countdown(to: end), now: now, calendar: cal).timeText
             let card = Display.card(event: countdown(to: end), now: now, showSeconds: false, calendar: cal)
             let m = TimeMath.unitsLeft(until: end, now: now, precision: .minutes)
-            XCTAssertEqual(widget, Display.compact(TimeMath.split(m, precision: .minutes)))
+            XCTAssertEqual(widget, Display.widgetWords(TimeMath.split(m, precision: .minutes)))
             let joined = card.detail.isEmpty ? card.big : card.big + ", " + card.detail
-            let expected = widget.replacingOccurrences(of: " hr", with: m >= 120 ? " hours" : " hour")
+            // A card drops the "0 min" that a widget keeps after whole hours.
+            let expected = widget.replacingOccurrences(of: ", 0 min", with: "")
+                .replacingOccurrences(of: " hr", with: m >= 120 ? " hours" : " hour")
                 .replacingOccurrences(of: " min", with: m % 60 == 1 ? " min" : " mins")
             XCTAssertEqual(joined, expected)
             left += 613
@@ -211,6 +214,18 @@ final class DisplayTests: XCTestCase {
         XCTAssertTrue(Display.isFinished(countdown(to: end), now: end, calendar: cal))
         XCTAssertFalse(Display.isFinished(countdown(to: end), now: end.addingTimeInterval(-0.5), calendar: cal))
         XCTAssertFalse(Display.isFinished(since(from: end), now: end.addingTimeInterval(500), calendar: cal))
+    }
+
+    func testWidgetWordsAreWrittenTheWayIOSWritesThem() {
+        XCTAssertEqual(Display.widgetWords(Amount(hours: 2)), "2 hr, 0 min")
+        XCTAssertEqual(Display.widgetWords(Amount(hours: 5, minutes: 15)), "5 hr, 15 min")
+        XCTAssertEqual(Display.widgetWords(Amount(minutes: 59)), "59 min")
+        XCTAssertEqual(Display.widgetWords(Amount(days: 1)), "1 day")
+        XCTAssertEqual(Display.widgetWords(Amount(days: 1, hours: 1)), "1 day, 1 hr")
+        XCTAssertEqual(Display.widgetWords(Amount(days: 8, hours: 5)), "8 days, 5 hr")
+        // Sentences in the app leave the zero out.
+        XCTAssertEqual(Display.compact(Amount(hours: 2)), "2 hr")
+        XCTAssertEqual(Display.compact(Amount(hours: 4, minutes: 15)), "4 hr, 15 min")
     }
 
     func testSamples() {

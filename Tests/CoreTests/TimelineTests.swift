@@ -6,13 +6,18 @@ final class TimelineTests: XCTestCase {
     let end = at(2026, 11, 19, 21, 0)
 
     /// What iOS's own "relative" clock text reads at `now`, counting to or from `reference`: the
-    /// biggest unit and the one under it, rounded down, a zero part left out. This is what the
-    /// simulator was seen to print (ProbeUITests writes it down on every run).
+    /// biggest unit and the one under it, rounded down. Written out here exactly as the iOS 26
+    /// simulator printed it (ProbeUITests writes it down on every run): "5 hr, 15 min",
+    /// "2 hr, 0 min", "1 day", "1 day, 1 hr", "8 days, 5 hr", "46 sec".
     private func systemText(_ reference: Date, at now: Date) -> String {
         let a = TimeMath.split(Int(abs(reference.timeIntervalSince(now)).rounded(.down)), precision: .seconds)
-        if a.days > 0 { return Display.compact(Amount(days: a.days, hours: a.hours)) }
-        if a.hours > 0 { return Display.compact(Amount(hours: a.hours, minutes: a.minutes)) }
-        return Display.compact(Amount(minutes: a.minutes, seconds: a.seconds))
+        if a.days > 0 {
+            let days = a.days == 1 ? "1 day" : "\(a.days) days"
+            return a.hours > 0 ? "\(days), \(a.hours) hr" : days
+        }
+        if a.hours > 0 { return "\(a.hours) hr, \(a.minutes) min" }
+        if a.minutes > 0 { return "\(a.minutes) min, \(a.seconds) sec" }
+        return "\(a.seconds) sec"
     }
 
     /// What a widget following `plan` has on it at `t`, if iOS never comes back for another plan.
@@ -112,7 +117,7 @@ final class TimelineTests: XCTestCase {
         let lastHour = plan.entries.suffix(61)
         XCTAssertTrue(lastHour.allSatisfy { $0.liveReference == nil })
         XCTAssertEqual(lastHour.first?.date, at(2026, 11, 19, 20, 0))
-        XCTAssertEqual(lastHour.prefix(3).map { $0.display.timeText }, ["1 hr", "59 min", "58 min"])
+        XCTAssertEqual(lastHour.prefix(3).map { $0.display.timeText }, ["1 hr, 0 min", "59 min", "58 min"])
         XCTAssertEqual(lastHour.suffix(3).map { $0.display.timeText }, ["2 min", "1 min", "Finished"])
         for e in plan.entries.dropFirst() {
             XCTAssertEqual(e.date, Schedule.wholeMinute(e.date))
@@ -188,7 +193,7 @@ final class TimelineTests: XCTestCase {
         let now = end.addingTimeInterval(-hms(26, 0, 30))
         let plan = TimelineBuilder.plan(event: event, mode: .countdown, now: now, calendar: cal)
         XCTAssertEqual(plan.entries.prefix(7).map { $0.display.timeText },
-                       ["1 day, 3 hr", "1 day, 2 hr", "1 day, 1 hr", "1 day", "23 hr, 59 min", "23 hr", "22 hr"])
+                       ["1 day, 3 hr", "1 day, 2 hr", "1 day, 1 hr", "1 day", "23 hr, 59 min", "23 hr, 0 min", "22 hr, 0 min"])
         XCTAssertEqual(plan.entries[3].date, end.addingTimeInterval(-hms(24)))
         XCTAssertEqual(plan.entries[4].date, end.addingTimeInterval(-hms(23, 59)))
         // More than a day out the words are ours; from 23 hr 59 min iOS's text takes over.

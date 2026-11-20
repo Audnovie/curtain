@@ -210,10 +210,16 @@ final class RealWidgetUITests: XCTestCase {
         top.press(forDuration: 0.1, thenDragTo: middle)
         sleep(2)
         record("cover-sheet")
-        springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)).press(forDuration: 2.5)
-        sleep(2)
+        // The touch-and-hold doesn't always take first time (a notification can swallow it).
+        var customizeButton: XCUIElement?
+        for attempt in 0..<3 where customizeButton == nil {
+            springboard.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: attempt == 1 ? 0.5 : 0.45))
+                .press(forDuration: 2.5 + Double(attempt) * 0.5)
+            sleep(2)
+            customizeButton = find(labelled("Customize"), timeout: 5)
+        }
         record("after-hold")
-        guard let customize = find(labelled("Customize"), timeout: 6) else {
+        guard let customize = customizeButton else {
             record("no-customize")
             return XCTFail("the Lock Screen didn't offer Customize")
         }

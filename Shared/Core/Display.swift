@@ -123,7 +123,7 @@ public enum Display {
         "\(n) \(n == 1 ? one : many)"
     }
 
-    /// "6 hr, 16 min": the two biggest parts, short enough for a Lock Screen widget.
+    /// "6 hr, 16 min", "6 hr": the two biggest parts, nothing that is zero. For sentences in the app.
     public static func compact(_ a: Amount) -> String {
         var parts: [String] = []
         if a.days > 0 { parts.append(plural(a.days, "day", "days")) }
@@ -131,6 +131,18 @@ public enum Display {
         if a.minutes > 0 { parts.append("\(a.minutes) min") }
         if a.seconds > 0 { parts.append("\(a.seconds) sec") }
         return parts.prefix(2).joined(separator: ", ")
+    }
+
+    /// The words on a widget, written the way iOS writes its own counting text, so the two look
+    /// the same wherever one hands over to the other: "5 hr, 15 min", "2 hr, 0 min" (iOS keeps
+    /// the zero minutes after whole hours), "59 min", "1 day, 1 hr", "2 days".
+    public static func widgetWords(_ a: Amount) -> String {
+        if a.days > 0 {
+            let days = plural(a.days, "day", "days")
+            return a.hours > 0 ? "\(days), \(a.hours) hr" : days
+        }
+        if a.hours > 0 { return "\(a.hours) hr, \(a.minutes) min" }
+        return "\(a.minutes) min"
     }
 
     /// The big line and the small line of a card: "6 hours" over "21 mins, 13 secs".
@@ -209,7 +221,7 @@ public enum Display {
             return WidgetDisplay(title: event.name, timeText: "Just now", bar: .empty, state: .running, mode: event.mode)
         }
         let amount = TimeMath.split(count.units, precision: count.precision)
-        return WidgetDisplay(title: event.name, timeText: compact(amount),
+        return WidgetDisplay(title: event.name, timeText: widgetWords(amount),
                              bar: Bar.forSpan(seconds: count.units * count.precision.rawValue),
                              state: .running, mode: event.mode)
     }
