@@ -40,21 +40,7 @@ enum SharedContainer {
     static func groupsInProvisioningProfile() -> [String] {
         guard let url = Bundle.main.url(forResource: "embedded", withExtension: "mobileprovision"),
               let data = try? Data(contentsOf: url) else { return [] }
-        return groups(inProfile: data)
-    }
-
-    /// A provisioning profile is a signed envelope around a plain property list.
-    static func groups(inProfile data: Data) -> [String] {
-        guard let start = data.range(of: Data("<?xml".utf8)),
-              let end = data.range(of: Data("</plist>".utf8), options: [], in: start.lowerBound..<data.endIndex)
-        else { return [] }
-        let body = data.subdata(in: start.lowerBound..<end.upperBound)
-        guard let any = try? PropertyListSerialization.propertyList(from: body, options: [], format: nil),
-              let plist = any as? [String: Any],
-              let entitlements = plist["Entitlements"] as? [String: Any],
-              let groups = entitlements["com.apple.security.application-groups"] as? [String]
-        else { return [] }
-        return groups
+        return ProvisioningProfile.appGroups(in: data)
     }
 
     static func resolve() -> Location {

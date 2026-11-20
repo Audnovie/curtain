@@ -201,3 +201,50 @@ final class StoreTests: XCTestCase {
         XCTAssertEqual(state.savedThemes[0].name, "T39")
     }
 }
+
+final class ProvisioningProfileTests: XCTestCase {
+    private func profile(_ groups: String) -> Data {
+        // The real thing is binary signing data around a property list, like this.
+        var data = Data([0x30, 0x82, 0x1F, 0x00, 0xFF, 0x00, 0x3C])
+        data.append(Data("""
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+            <key>AppIDName</key>
+            <string>Curtain</string>
+            <key>Entitlements</key>
+            <dict>
+                <key>application-identifier</key>
+                <string>ABCDE12345.io.github.audnovie.curtain</string>
+                \(groups)
+            </dict>
+            <key>TeamName</key>
+            <string>Someone</string>
+        </dict>
+        </plist>
+        """.utf8))
+        data.append(Data([0x00, 0xA0, 0x82, 0x0D, 0x3C, 0x2F]))
+        return data
+    }
+
+    func testGroupsAreReadFromAProfile() {
+        let renamed = profile("""
+        <key>com.apple.security.application-groups</key>
+        <array>
+            <string>group.io.github.audnovie.curtain.ABCDE12345</string>
+            <string>group.other</string>
+        </array>
+        """)
+        XCTAssertEqual(ProvisioningProfile.appGroups(in: renamed),
+                       ["group.io.github.audnovie.curtain.ABCDE12345", "group.other"])
+    }
+
+    func testProfilesWithoutGroupsAndRubbish() {
+        XCTAssertEqual(ProvisioningProfile.appGroups(in: profile("")), [])
+        XCTAssertEqual(ProvisioningProfile.appGroups(in: Data()), [])
+        XCTAssertEqual(ProvisioningProfile.appGroups(in: Data("no list in here".utf8)), [])
+        XCTAssertEqual(ProvisioningProfile.appGroups(in: Data("<?xml never closed".utf8)), [])
+        XCTAssertEqual(ProvisioningProfile.appGroups(in: Data("<?xml version=\"1.0\"?><plist><array/></plist>".utf8)), [])
+    }
+}

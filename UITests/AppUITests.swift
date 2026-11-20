@@ -245,6 +245,106 @@ final class EditorUITests: CurtainUITestCase {
     }
 }
 
+final class FlowUITests: CurtainUITestCase {
+    /// Tapping a widget opens curtain://event/<id>; the app goes straight to that countdown.
+    func testWidgetTapOpensItsCountdown() {
+        let app = launch(seed: "ended")
+        _ = cardText(app, "Done work")
+        XCUIDevice.shared.system.open(URL(string: "curtain://event/D0E0D0E0-0000-4000-8000-000000000001")!)
+        // Two taps from the widget to a running countdown: the widget, then the time.
+        let nine = app.buttons["usual.1260"]
+        XCTAssertTrue(nine.waitForExistence(timeout: 15), "the countdown's sheet didn't open")
+        nine.tap()
+        waitGone(nine, "the sheet")
+        XCTAssertTrue(cardText(app, "Done work").contains("Ends 9:00 PM"))
+        // A link to something that doesn't exist does nothing.
+        XCUIDevice.shared.system.open(URL(string: "curtain://event/00000000-0000-4000-8000-000000000000")!)
+        sleep(2)
+        XCTAssertFalse(app.buttons["detail.edit"].exists)
+        XCTAssertTrue(card(app, "Done work").exists)
+    }
+
+    func testCountdownsAreStillThereAfterQuitting() {
+        var app = launch(seed: "work")
+        _ = cardText(app, "Holiday")
+        app.terminate()
+        // No reset and no seed this time: only what was saved.
+        app = XCUIApplication()
+        app.launchArguments = ["-UITestNow", CurtainUITestCase.afternoon, "-UITestTimeZone", "America/Toronto"]
+        app.launch()
+        XCTAssertTrue(cardText(app, "Done work").contains("6 hours"))
+        XCTAssertTrue(cardText(app, "Holiday").contains("35 days"))
+        XCTAssertTrue(card(app, "Pizza").exists)
+    }
+
+    func testADamagedFileIsSetAsideNotOverwritten() {
+        let app = launch(extra: ["-UITestDamagedFile"])
+        let notice = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'set aside as state-unreadable-'")).firstMatch
+        XCTAssertTrue(notice.waitForExistence(timeout: 10), "no word about the damaged file")
+        print("NOTE damaged file: \(notice.label)")
+        shot("damaged-file")
+        // The app still works.
+        app.buttons["empty.donework"].tap()
+        let five = app.buttons["usual.1020"]
+        XCTAssertTrue(five.waitForExistence(timeout: 10))
+        five.tap()
+        waitGone(five, "the sheet")
+        XCTAssertTrue(cardText(app, "Done work").contains("2 hours"))
+    }
+
+    func testMakeACountdownReusableAndRestartATimeSince() {
+        let app = launch(seed: "work")
+        // "Parcel arrives" is a one-off. Make it reusable with a usual time of 5:00 PM.
+        card(app, "Parcel arrives").tap()
+        XCTAssertTrue(app.buttons["detail.edit"].waitForExistence(timeout: 10))
+        XCTAssertFalse(app.buttons["usual.1020"].exists)
+        app.buttons["detail.edit"].tap()
+        XCTAssertTrue(app.textFields["editor.name"].waitForExistence(timeout: 10))
+        app.swipeUp()
+        flip(app.switches["editor.reusable"])
+        let add = app.buttons["editor.addusual"]
+        XCTAssertTrue(add.waitForExistence(timeout: 5))
+        add.tap()
+        shot("editor-made-reusable")
+        app.buttons["editor.save"].tap()
+        let text = cardText(app, "Parcel arrives")
+        XCTAssertTrue(text.contains("Reusable"), text)
+        card(app, "Parcel arrives").tap()
+        let five = app.buttons["usual.1020"]
+        XCTAssertTrue(five.waitForExistence(timeout: 10), "the usual time wasn't saved")
+        app.buttons["Close"].tap()
+        waitGone(five, "the sheet")
+
+        // "New phone" has been counting for three days. Start it again from now.
+        card(app, "New phone").tap()
+        let restart = app.buttons["detail.restart"]
+        XCTAssertTrue(restart.waitForExistence(timeout: 10))
+        restart.tap()
+        let confirm = app.buttons["Start again"]
+        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
+        confirm.tap()
+        app.buttons["Close"].tap()
+        waitGone(restart, "the sheet")
+        let phone = cardText(app, "New phone")
+        XCTAssertTrue(phone.contains("Just now"), phone)
+        XCTAssertTrue(phone.contains("Since 2:45 PM"), phone)
+    }
+
+    func testDeleteFromTheDetailSheet() {
+        let app = launch(seed: "work")
+        card(app, "Dentist").tap()
+        let delete = app.buttons["detail.delete"]
+        XCTAssertTrue(delete.waitForExistence(timeout: 10))
+        delete.tap()
+        // The row and the confirmation are both called Delete; the confirmation is the newer one.
+        let buttons = app.buttons.matching(NSPredicate(format: "label == 'Delete'"))
+        XCTAssertTrue(buttons.element(boundBy: 1).waitForExistence(timeout: 5), "no confirmation")
+        buttons.element(boundBy: buttons.count - 1).tap()
+        waitGone(card(app, "Dentist"), "Dentist")
+        XCTAssertTrue(card(app, "Done work").exists)
+    }
+}
+
 final class ColourUITests: CurtainUITestCase {
     func testPickAThemeAndMatchAWallpaper() {
         let app = launch(seed: "seven", extra: ["-UITestWallpaper"])

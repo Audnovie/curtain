@@ -23,6 +23,10 @@ final class Store: ObservableObject {
             try? FileManager.default.removeItem(at: location.file)
             try? FileManager.default.removeItem(at: location.widgetNote)
         }
+        if AppClock.arguments.contains("-UITestDamagedFile") {
+            try? FileManager.default.createDirectory(at: location.folder, withIntermediateDirectories: true)
+            try? Data("{ this is not a saved file".utf8).write(to: location.file)
+        }
         var loaded = AppState()
         var message: String?
         var saving = true
@@ -81,12 +85,15 @@ final class Store: ObservableObject {
 
     // MARK: Starting points for the UI tests
 
+    /// The seeded "Done work" always has this id, so a test can open it the way a widget tap does.
+    static let seedWorkID = UUID(uuidString: "D0E0D0E0-0000-4000-8000-000000000001") ?? UUID()
+
     static func seed(_ name: String, now: Date, calendar: Calendar) -> AppState {
         var s = AppState()
         func add(_ e: Event) { s.upsert(e, now: now, calendar: calendar) }
         let day = 86400.0
         let made = now.addingTimeInterval(-20 * day)
-        let work = Event(name: "Done work", mode: .countdown,
+        let work = Event(id: Store.seedWorkID, name: "Done work", mode: .countdown,
                          date: Schedule.next(minuteOfDay: 21 * 60, after: now, calendar: calendar),
                          reusable: true, usualTimes: [17 * 60, 19 * 60, 21 * 60], theme: .ember, createdAt: made)
         switch name {
